@@ -1,0 +1,74 @@
+-R theories/category-theory sgdt.category_theory
+
+-Q theories/ecategory-theory sgdt.ecategory_theory
+
+-Q theories/ofe sgdt.ofe
+-Q theories/solver sgdt.solver
+-Q theories/solver/instances sgdt.solver.instances
+
+-Q theories/ofe/ofe-cat sgdt.ofe.ofe_cat
+-Q theories/ofe/ofe-cat/categories sgdt.ofe.ofe_cat.categories
+-Q theories/ofe/ofe-cat/functors sgdt.ofe.ofe_cat.functors
+-Q theories/ofe/ofe-cat/structure sgdt.ofe.ofe_cat.structure
+
+# From Iris: We sometimes want to locally override notation, and there is no good way to do that with scopes.
+-arg "-w -notation-overridden"
+
+# Allow commands like Restart
+-arg -async-proofs-cache -arg force
+
+# Cannot use non-canonical projections as it causes massive unification failures
+# (https://github.com/coq/coq/issues/6294).
+-arg -w -arg -redundant-canonical-projection
+
+theories/category-theory/category.v
+theories/category-theory/functor.v
+theories/category-theory/natural_transformation.v
+theories/category-theory/isomorphism.v
+theories/category-theory/category_theory.v
+
+theories/category-theory/structure/terminal.v
+theories/category-theory/structure/initial.v
+theories/category-theory/structure/finite_products.v
+theories/category-theory/structure/closed.v
+theories/category-theory/structure/structure.v
+
+theories/category-theory/instances/categories/type.v
+theories/category-theory/instances/functors/hom.v
+theories/category-theory/instances/functors/const.v
+theories/category-theory/instances/functors/product.v
+
+theories/ofe/ofe.v
+
+theories/ofe/ofe-cat/categories/OFE.v
+theories/ofe/ofe-cat/categories/COFE.v
+theories/ofe/ofe-cat/categories/iCOFE.v
+
+theories/ofe/ofe-cat/structure/ofe_ccc.v
+theories/ofe/ofe-cat/structure/cofe_ccc.v
+theories/ofe/ofe-cat/structure/icofe_ccc.v
+theories/ofe/ofe-cat/structure/icofe_monoidal.v
+
+theories/ofe/ofe-cat/functors/later.v
+theories/ofe/ofe-cat/ofe_cat.v
+
+theories/ofe/banach.v
+
+theories/ecategory-theory/ecategory.v
+theories/ecategory-theory/eisomorphism.v
+theories/ecategory-theory/efunctor.v
+theories/ecategory-theory/ealgebra.v
+
+theories/solver/instances/einstances.v
+theories/solver/instances/eicofe_ctr_compl.v
+
+theories/solver/econtractive.v
+theories/solver/elater.v
+theories/solver/partial_econtractive.v
+theories/solver/ectr_compl.v
+theories/solver/dialgebra_unique.v
+theories/solver/muF.v
+theories/solver/esym.v
+theories/solver/join_split.v
+theories/solver/general_america_rutten.v
+theories/solver/general_existence.v
