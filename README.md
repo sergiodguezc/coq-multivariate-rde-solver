@@ -1,4 +1,4 @@
-# Coq Multivariate Recursive Domain Equations in Coq
+# Multivariate Recursive Domain Equations in Coq
 _Accompanying Coq sources for the paper: Solving Multivariate Recursive Domain Equations in Coq_
 
 A Coq formalization and solver for general multivariate recursive domain
