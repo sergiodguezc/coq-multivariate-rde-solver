@@ -1,5 +1,7 @@
-From sgdt Require Import functor efunctor ecategory category ofe iCOFE ofe_ccc icofe_ccc icofe_monoidal product econtractive partial_econtractive.
-Require Import ssreflect  FunctionalExtensionality.
+From sgdt Require Import functor efunctor ecategory category ofe.
+From sgdt Require Import iCOFE ofe_ccc icofe_ccc icofe_monoidal.
+From sgdt Require product econtractive partial_econtractive.
+Require Import ssreflect.
 
 Open Scope ofe_category_scope.
 Open Scope ofe_morphism_scope.

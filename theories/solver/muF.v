@@ -2,7 +2,7 @@ From sgdt Require Import ecategory efunctor ealgebra ofe banach econtractive.
 From sgdt Require Import partial_econtractive eisomorphism ectr_compl.
 From sgdt Require Import einstances icofe_monoidal.
 
-Require Import ssreflect.
+Require Import ssreflect Lia.
 
 Definition second_efunctor_ctr {Y Z : eCategory} (F : eFunctorCtrSnd Y Z Z)
   (A : Y) : eFunctorCtr Z Z := toeFunctorCtr (second_efunctor_ctr_partial F A).

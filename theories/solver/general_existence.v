@@ -1,9 +1,9 @@
-From sgdt Require Import category_theory ecategory efunctor eisomorphism.
+From sgdt Require Import category_theory axioms ecategory efunctor eisomorphism.
 From sgdt Require Import ofe banach iCOFE ofe_ccc icofe_ccc econtractive partial_econtractive ectr_compl.
 From sgdt Require Import muF join_split ealgebra general_america_rutten ealgebra esym.
 From sgdt Require Import einstances eicofe_ctr_compl product.
 
-From Coq Require Import ssreflect FunctionalExtensionality PropExtensionality.
+From Coq Require Import ssreflect Lia.
 
 Theorem general_existence_base_case {Y : eCategory} `{eCategoryCtrComplete Y}
 (F : eFunctorCtrSnd ((Y^op × Y) ** 0) (Y^op × Y) Y) :

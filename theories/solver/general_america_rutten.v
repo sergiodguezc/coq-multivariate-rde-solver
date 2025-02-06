@@ -2,7 +2,7 @@ From sgdt Require Import ecategory functor efunctor eisomorphism product.
 From sgdt Require Import ofe iCOFE icofe_ccc econtractive partial_econtractive ectr_compl.
 From sgdt Require Import muF ealgebra banach.
 
-Require Import ssreflect.
+Require Import ssreflect Lia.
 
 (* Definition of ZF efunctor *)
 Lemma to_op_ecomp {Y : eCategory} {A B C : Y} (f : A ~~{Y}~> B) (g : B ~~{Y}~> C) :
