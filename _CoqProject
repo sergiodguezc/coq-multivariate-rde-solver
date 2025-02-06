@@ -3,6 +3,9 @@
 -Q theories/ecategory-theory sgdt.ecategory_theory
 
 -Q theories/ofe sgdt.ofe
+
+-Q theories/prelude sgdt.prelude
+
 -Q theories/solver sgdt.solver
 -Q theories/solver/instances sgdt.solver.instances
 
@@ -20,6 +23,8 @@
 # Cannot use non-canonical projections as it causes massive unification failures
 # (https://github.com/coq/coq/issues/6294).
 -arg -w -arg -redundant-canonical-projection
+
+theories/prelude/axioms.v
 
 theories/category-theory/category.v
 theories/category-theory/functor.v
@@ -66,7 +71,6 @@ theories/solver/econtractive.v
 theories/solver/elater.v
 theories/solver/partial_econtractive.v
 theories/solver/ectr_compl.v
-theories/solver/dialgebra_unique.v
 theories/solver/muF.v
 theories/solver/esym.v
 theories/solver/join_split.v

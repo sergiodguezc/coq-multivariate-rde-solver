@@ -1,5 +1,5 @@
-From sgdt Require Import ecategory ofe iCOFE icofe_ccc.
-Require Import ssreflect PropExtensionality.
+From sgdt Require Import axioms ecategory ofe iCOFE icofe_ccc.
+Require Import ssreflect.
 
 (*  Definition of isomorphism between objects *)
 Open Scope ofe_category_scope.

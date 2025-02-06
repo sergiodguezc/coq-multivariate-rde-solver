@@ -1,4 +1,5 @@
-From Coq Require Import ssreflect FunctionalExtensionality PropExtensionality PeanoNat.
+From sgdt Require Import axioms.
+From Coq Require Import ssreflect PeanoNat.
 
 (* Definition of a category *)
 

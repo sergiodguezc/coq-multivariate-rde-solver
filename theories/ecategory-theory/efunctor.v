@@ -1,5 +1,5 @@
-From sgdt Require Import category ecategory ofe iCOFE eisomorphism.
-From Coq Require Import ssreflect FunctionalExtensionality PropExtensionality.
+From sgdt Require Import axioms category ecategory ofe iCOFE eisomorphism.
+From Coq Require Import ssreflect.
 
 Structure eFunctMixin (Y Z : eCategory)
   (efobj : Y -> Z) (efmap : forall {A B : eobj Y}, (A ~~> B) -> ((efobj A) ~~> (efobj B))) := {

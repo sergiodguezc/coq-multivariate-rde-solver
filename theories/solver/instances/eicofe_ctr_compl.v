@@ -1,10 +1,10 @@
-From sgdt Require Import category terminal closed ecategory efunctor eisomorphism ofe iCOFE icofe_ccc.
+From sgdt Require Import axioms category terminal closed ecategory efunctor eisomorphism ofe iCOFE icofe_ccc.
 From sgdt Require Import einstances econtractive ectr_compl banach.
 Require Import ssreflect.
 
 (* From sgdt.ofe Require Import ofe ofe_cat endo_cofe banach. *)
 
-Require Import ssreflect PropExtensionality FunctionalExtensionality.
+Require Import ssreflect Lia.
 
 Fixpoint Fn (F : eEndoFunctor eiCOFE) (n : nat) : eiCOFE :=
   match n with

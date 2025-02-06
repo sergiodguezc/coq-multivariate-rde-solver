@@ -20,6 +20,8 @@ where `[n]` is the number of CPU cores to use for compilation.
 
 ## Structure
 The source code for the paper is located in the [**theories**](theories) folder and is structured as follows:
+- [**prelude**](theories/prelude)
+    - `axioms.v` -- Axioms used in the formalization.
 - [**category-theory**](theories/category-theory)
     - `category.v` -- Definition of a category and common instances and properties.
     - `functor.v` -- Definition of a functor and common instances and properties.
@@ -41,11 +43,6 @@ The source code for the paper is located in the [**theories**](theories) folder 
         - `finite_products.v` -- Definition of a category with finite products.
         - `closed.v` -- Definition of a cartesian closed category.
         - `structure.v` -- Wrapper that exports all the contents of the `structure` folder.
-- [**ecategory-theory**](theories/ecategory-theory)
-    - `ecategory.v` -- Definition of a category enriched over the category of iCOFEs and common instances and properties.
-    - `efunctor.v` -- Definition of an enriched functor over the category of iCOFEs and common instances and properties.
-    - `ealgebra.v` -- Definition of an enriched algebra over the category of iCOFEs and common instances and properties.
-    - `eisomorphism.v` -- Definition of an enriched isomorphism over the category of iCOFEs and common instances and properties.
 - [**ofe**](theories/ofe)
     - `ofe.v` -- Definition of ordered families of equivalences, non-expansive functions, and contractive functions.
     - `banach.v` -- Proof that the Banach fixed-point theorem holds for contractive functions.
@@ -62,12 +59,16 @@ The source code for the paper is located in the [**theories**](theories) folder 
             - `cofe_ccc.v` -- Proof that the category of complete ordered families of equivalences is a cartesian closed category.
             - `icofe_ccc.v` -- Proof that the category of inhabited complete ordered families of equivalences is a cartesian closed category.
             - `icofe_monoidal.v` -- Proof that the category of inhabited complete ordered families of equivalences is a monoidal category.
+- [**ecategory-theory**](theories/ecategory-theory)
+    - `ecategory.v` -- Definition of a category enriched over the category of iCOFEs and common instances and properties.
+    - `efunctor.v` -- Definition of an enriched functor over the category of iCOFEs and common instances and properties.
+    - `ealgebra.v` -- Definition of an enriched algebra over the category of iCOFEs and common instances and properties.
+    - `eisomorphism.v` -- Definition of an enriched isomorphism over the category of iCOFEs and common instances and properties.
 - [**solver**](theories/solver)
     - `econtractive.v` -- Definition of locally contractive functors.
     - `elater.v` -- Definition of the later functor in the enriched setting.
     - `partial_econtractive.v` -- Definition of partially locally contractive functors.
     - `ectr_compl.v` -- Definition of a contractively complete iCOFE-enriched category.
-    - `dialgebra_unique.v` -- Proof that any two dialgebras are isomorphic.
     - `join_split.v` -- Definition of the auxiliary join and split iCOFE-enriched functors.
     - `esym.v` -- Definition of the symmetrization of a iCOFE-enriched functor.
     - `muF.v` -- Definition of the muF functor and its properties.

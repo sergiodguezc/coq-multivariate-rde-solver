@@ -1,5 +1,5 @@
-From sgdt Require Import category isomorphism type.
-From Coq Require Import ssreflect FunctionalExtensionality PropExtensionality.
+From sgdt Require Import axioms category isomorphism type.
+From Coq Require Import ssreflect.
 
 (* Definition of a functor *)
 

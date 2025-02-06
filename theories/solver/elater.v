@@ -1,5 +1,5 @@
 From sgdt Require Import ecategory efunctor ofe later einstances.
-Require Import ssreflect.
+Require Import ssreflect Lia.
 
 (* Later is an enriched endofunctor *)
 Program Definition elater_fmap {A B : ofe} (f : A -n> B) : ▶  A -n> ▶  B :=

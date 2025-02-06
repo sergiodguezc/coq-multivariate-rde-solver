@@ -1,6 +1,6 @@
 From sgdt Require Import category functor efunctor ecategory ofe OFE ofe_ccc iCOFE icofe_ccc icofe_monoidal product.
 From sgdt Require Import later.
-Require Import ssreflect.
+Require Import ssreflect Lia.
 
 Open Scope ofe_category_scope.
 Open Scope ofe_morphism_scope.
@@ -83,14 +83,15 @@ Proof.
     destruct f1, g1. reflexivity.
 Qed.
 
-Definition later_prod {Y Z : eCategory } : eFunctor (later_ecat (eprod_cat Y Z)) (eprod_cat (later_ecat Y) (later_ecat Z)) := {|
-  efobj := fun A : later_ecat (eprod_cat Y Z) => A : eprod_cat (later_ecat Y) (later_ecat Z);
-  efmap_mor := fun '(A1, A2) '(B1, B2) f => 
-    match f with
-    | next f =>
-        match f with (f1, f2) => (next f1, next f2) end
-    end;
-  efunct_mixin := later_prod_mixin Y Z
+Definition later_prod {Y Z : eCategory } :
+  eFunctor (later_ecat (eprod_cat Y Z)) (eprod_cat (later_ecat Y) (later_ecat Z)) := {|
+    efobj := fun A : later_ecat (eprod_cat Y Z) => A : eprod_cat (later_ecat Y) (later_ecat Z);
+    efmap_mor := fun '(A1, A2) '(B1, B2) f => 
+      match f with
+      | next f =>
+          match f with (f1, f2) => (next f1, next f2) end
+      end;
+    efunct_mixin := later_prod_mixin Y Z
  |}.
 
 

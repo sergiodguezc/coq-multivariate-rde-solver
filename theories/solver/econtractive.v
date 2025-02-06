@@ -1,5 +1,5 @@
-From sgdt Require Import ofe ecategory functor later iCOFE icofe_ccc later efunctor einstances eisomorphism.
-From Coq Require Import ssreflect  FunctionalExtensionality PropExtensionality.
+From sgdt Require Import axioms ofe ecategory functor later iCOFE icofe_ccc later efunctor einstances eisomorphism.
+From Coq Require Import ssreflect Lia.
 
 Record eFunctorCtr (Y Z : eCategory)  : Type := {
   efunct : eFunctor Y Z;

@@ -1,5 +1,5 @@
-From sgdt Require Import category functor isomorphism.
-From Coq Require Import ssreflect FunctionalExtensionality PropExtensionality.
+From sgdt Require Import axioms category functor isomorphism.
+From Coq Require Import ssreflect.
 
 (* Natural Transformation *)
 

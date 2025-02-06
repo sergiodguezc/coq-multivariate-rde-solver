@@ -1,5 +1,5 @@
-From sgdt Require Import category.
-From Coq Require Import ssreflect PropExtensionality.
+From sgdt Require Import category axioms.
+From Coq Require Import ssreflect.
 
 (* Definition of isomorphism between objects in a category *)
 Record iso {Y : Category} (A B : Y) : Type := mkISO

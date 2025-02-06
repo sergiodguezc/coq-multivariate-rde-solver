@@ -1,5 +1,6 @@
-From sgdt Require Import category functor isomorphism finite_products closed terminal ofe iCOFE icofe_ccc icofe_monoidal product.
-Require Import ssreflect PropExtensionality FunctionalExtensionality.
+From sgdt Require Import axioms category functor isomorphism finite_products closed terminal.
+From sgdt Require Import ofe iCOFE icofe_ccc icofe_monoidal product.
+Require Import ssreflect.
 
 Structure eCatMixin (eobj : Type) (ehom : eobj -> eobj -> obj[iCOFE]) 
     (eid_mor : forall {x}, icofe_unit -> ehom x x)

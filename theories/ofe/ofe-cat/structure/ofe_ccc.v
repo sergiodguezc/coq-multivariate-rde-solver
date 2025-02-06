@@ -1,6 +1,5 @@
-From sgdt Require Import ofe category_theory OFE.
-From sgdt Require Export ofe.
-From Coq Require Import ssreflect FunctionalExtensionality Lia.
+From sgdt Require Import ofe axioms ofe category_theory OFE.
+From Coq Require Import ssreflect.
 
 (* Lift any type to an mkOFE *)
 Lemma ofe_lift_mixin (A : Type) : OfeMixin A (fun _ x y => x = y).

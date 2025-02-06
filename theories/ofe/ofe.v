@@ -1,5 +1,5 @@
-From Coq Require Export ssreflect Lia RelationClasses Relation_Definitions SetoidClass FunctionalExtensionality PropExtensionality.
-From sgdt Require Import category isomorphism.
+From Coq Require Import ssreflect Lia RelationClasses Relation_Definitions SetoidClass.
+From sgdt Require Import axioms category isomorphism.
 
 (* Ordered Family of Equivalences (OFE) *)
 

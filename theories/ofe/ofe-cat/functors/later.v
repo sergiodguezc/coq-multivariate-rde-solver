@@ -1,5 +1,5 @@
-From sgdt Require Import category_theory ofe ofe_ccc cofe_ccc OFE COFE iCOFE icofe_ccc.
-Require Import ssreflect.
+From sgdt Require Import category_theory axioms ofe ofe_ccc cofe_ccc OFE COFE iCOFE icofe_ccc.
+Require Import ssreflect Lia.
 
 (* Later ofe *)
 Inductive later_car (F : ofe) :=

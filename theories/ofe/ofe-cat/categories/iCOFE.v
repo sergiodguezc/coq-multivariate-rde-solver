@@ -1,4 +1,4 @@
-From sgdt Require Import category isomorphism ofe OFE.
+From sgdt Require Import axioms category isomorphism ofe OFE.
 Require Import ssreflect.
 
 (* COFE is the category of complete ordered families of equivalences. *)
