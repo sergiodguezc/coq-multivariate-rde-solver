@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+title: coq-multivariate-rde-solver
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Sergio
+    family-names: Domínguez Cabrera
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.14879646
+repository-code: 'https://zenodo.org/records/14879646'
+repository: >-
+  https://github.com/sergiodguezc/coq-multivariate-rde-solver
+abstract: >-
+  This paper addresses the challenge of solving recursive
+  domain equations in Coq for type constructors with
+  multiple arguments that appear in both positive and
+  negative positions. Existing frameworks primarily focus on
+  type constructors with a single argument, limiting their
+  applicability to more complex scenarios. While the
+  theoretical foundation for solving such equations with
+  multiple arguments has been established, specific proof
+  details for the general case are missing. This work
+  bridges that gap by providing a comprehensive
+  formalization in Coq. Our formalization is based on the
+  category of ordered families of equivalences (OFEs) and
+  non-expansive functions, a widely adopted and practical
+  model for guarded recursion. This choice enhances the
+  relevance and applicability of our contributions to
+  ongoing research and projects in the field.
+license: BSD-3-Clause
