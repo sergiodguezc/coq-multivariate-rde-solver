@@ -102,7 +102,7 @@ Proof.
   unshelve epose (g := _ : (A ~~{Y}~> B) -c> (F A ~~> F B)).
   { exists (fun (h : A ~~{Y}~> B) => efmap_mor F h). apply efunct_ctr. }
   destruct (contractive_ilaterT g) as [g' _].
-  by apply g'. 
+  apply g'. exact f.
 Defined.
 
 Lemma G_from_efunct_ctr_mixin {Y Z : eCategory}
@@ -151,6 +151,17 @@ Proof.
   right. apply Hfg. lia.
 Qed.
 
+Theorem later_ecat_contractive_char {Y Z : eCategory} (F : eFunctor Y Z) :
+  iseFunctorCtr F <-> exists G : eFunctor (later_ecat Y) Z , F = compose_efunctor G (enext_efunctor Y) .
+Proof.
+  split.
+  - intros H. destruct (contractive_later_ecat (toeFunctorCtr H)) as [G H1].
+    exists G. apply H1.
+  - intros [G HG].
+    apply later_ecat_contractive.
+    by exists G.
+Qed.
+
 Theorem swap_funct_ctr {X Y Z : eCategory} (F : eFunctorCtr (X × Y) Z) : eFunctorCtr (Y × X) Z.
 Proof.
   unshelve refine {| efunct := swap_efunct F |}.
@@ -161,4 +172,3 @@ Proof.
   specialize (Hfg m Hm).
   by destruct Hfg.
 Defined.
-  

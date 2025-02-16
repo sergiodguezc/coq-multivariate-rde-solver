@@ -12,64 +12,51 @@ Definition esym0_efmap_mor {Z : eCategory} (F : one_ecat →  Z) :
   forall (A B : eobj[one_ecat]) (f : A ~~> B), esym0_eobj F A ~~{(Z^op × Z)}~> esym0_eobj F B :=
   fun _ _ _ => (eid{Z^op} tt, eid{Z} tt).
 
-Lemma esym0_efmap_mor_ne {Z : eCategory} (F : one_ecat →  Z) A B :
-  NonExpansive (esym0_efmap_mor F A B).
-Proof. intros n [] [] [] ; split ; reflexivity. Qed.
-
-Lemma esym0_efmap_id {Z : eCategory} (F : one_ecat →  Z) A :
-  esym0_efmap_mor F A A (eid{one_ecat} tt) = eid{Z^op × Z} tt.
-Proof. by rewrite /esym0_efmap_mor /=. Qed.
-
-Lemma esym0_efmap_compose {Z : eCategory} (F : one_ecat →  Z) A B C
-  (f : B ~~> C) (g : A ~~> B) :
-  esym0_efmap_mor F A C (f ∘e g) = esym0_efmap_mor F B C f ∘e esym0_efmap_mor F A B g.
-Proof. rewrite /esym0_efmap_mor /= /ecomp /=. by simplify_ecat. Qed.
-
 Lemma esym0_mixin {Z : eCategory} (F : one_ecat →  Z) :
   eFunctMixin one_ecat (Z^op × Z) (esym0_eobj F) (esym0_efmap_mor F).
 Proof.
   unshelve econstructor.
-  - apply esym0_efmap_mor_ne.
-  - apply esym0_efmap_id.
-  - apply esym0_efmap_compose.
+  - intros n [] [] [] ; split ; reflexivity. 
+  - by rewrite /esym0_efmap_mor /=. 
+  - rewrite /esym0_efmap_mor /= /ecomp /=. by simplify_ecat. 
 Qed.
 
 Definition esym0 {Z : eCategory} (F : one_ecat →  Z) : one_ecat →  (Z^op × Z) := {|
  efobj := esym0_eobj F ;
  efmap_mor := esym0_efmap_mor F ;
  efunct_mixin := esym0_mixin F
- |}.
+|}.
 
-(* Symmetrization of a efunctor with more than one argument *)
-Definition esymS_eobj {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z)
+(* Parametric Symmetrization of a functor *)
+Definition par_esymS_eobj {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z)
   : eobj[(X^op × X) × (Y^op × Y)] -> Z^op × Z :=
   fun '((X1, X2), (Y1, Y2)) => (F (X1, (Y2, Y1)), F (X2, (Y1, Y2))).
 
 
-Definition esymS_efmap_mor {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) :
+Definition par_esymS_efmap_mor {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) :
   forall (A B : eobj[((X^op × X) × (Y^op × Y))]) (f : A ~~> B),
-  esymS_eobj F A ~~{(Z^op × Z)}~> esymS_eobj F B :=
+  par_esymS_eobj F A ~~{(Z^op × Z)}~> par_esymS_eobj F B :=
   fun '((X1, X2), (Y1, Y2)) '((X1', X2'), (Y1', Y2')) '((fz1, fz2), (fy1, fy2)) =>
     eprod_mor (ebimap[F] fz1 (eprod_mor fy2 fy1)) (ebimap[F] fz2 (eprod_mor fy1 fy2)).
 
-Lemma esymS_efmap_mor_ne {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A B :
-  NonExpansive (esymS_efmap_mor F A B).
+Lemma par_esymS_efmap_mor_ne {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A B :
+  NonExpansive (par_esymS_efmap_mor F A B).
 Proof.
   destruct A as [[A1 A2] [A3 A4]], B as [[B1 B2] [B3 B4]].
   intros n [[f1 f2] [f3 f4]] [[g1 g2] [g3 g4]] [[H1 H2] [H3 H4]] ; split
   ; simpl in * ; apply hom_ne ; split ; [| split | | split ] ; simpl ; assumption.
 Qed.
 
-Lemma esymS_efmap_id {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A :
-  esymS_efmap_mor F A A (eid{((X^op × X) × (Y^op × Y))} tt) = eid{Z^op × Z} tt.
+Lemma par_esymS_efmap_id {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A :
+  par_esymS_efmap_mor F A A (eid{((X^op × X) × (Y^op × Y))} tt) = eid{Z^op × Z} tt.
 Proof.
   destruct A as [[A1 A2] [A3 A4]]  ; simpl.
   by rewrite !ebimap_id.
 Qed.
 
-Lemma esymS_efmap_compose {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A B C
+Lemma par_esymS_efmap_compose {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) A B C
   (f : B ~~> C) (g : A ~~> B) :
-  esymS_efmap_mor F A C (f ∘e g) = esymS_efmap_mor F B C f ∘e esymS_efmap_mor F A B g.
+  par_esymS_efmap_mor F A C (f ∘e g) = par_esymS_efmap_mor F B C f ∘e par_esymS_efmap_mor F A B g.
 Proof.
   destruct A as [[A1 A2] [A3 A4]], B as [[B1 B2] [B3 B4]], C as [[C1 C2] [C3 C4]],
   f as [[f1 f2] [f3 f4]], g as [[g1 g2] [g3 g4]] ; simpl in *.
@@ -80,22 +67,23 @@ Proof.
   by rewrite ebimap_ecompose.
 Qed.
 
-Lemma esymS_mixin {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) :
-  eFunctMixin ((X^op × X) × (Y^op × Y)) (Z^op × Z) (esymS_eobj F) (esymS_efmap_mor F).
+Lemma par_esymS_mixin {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) :
+  eFunctMixin ((X^op × X) × (Y^op × Y)) (Z^op × Z) (par_esymS_eobj F) (par_esymS_efmap_mor F).
 Proof.
   unshelve econstructor.
-  - apply esymS_efmap_mor_ne.
-  - apply esymS_efmap_id.
-  - apply esymS_efmap_compose.
+  - apply par_esymS_efmap_mor_ne.
+  - apply par_esymS_efmap_id.
+  - apply par_esymS_efmap_compose.
 Qed.
   
-Definition esymS {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z) :
-  (X^op × X) × (Y^op × Y) →  Z^op × Z := {|
- efobj := esymS_eobj F ;
- efmap_mor := esymS_efmap_mor F ;
- efunct_mixin := esymS_mixin F
+Definition par_esymS {X Y Z : eCategory} (F : X × (Y^op × Y) →  Z)
+  : (X^op × X) × (Y^op × Y) →  Z^op × Z := {|
+ efobj := par_esymS_eobj F ;
+ efmap_mor := par_esymS_efmap_mor F ;
+ efunct_mixin := par_esymS_mixin F
 |}.
 
+(* Some manual coercions *)
 Fixpoint eop_to_eobj {Y : eCategory} {n : nat} (x : eobj[Y ** n]) : eobj[(Y^op ** n)] := 
   match n return eobj[Y ** n] -> eobj[(Y^op ** n)] with
   | O => fun x => x
@@ -154,7 +142,6 @@ Proof.
   by rewrite /= IHn.
 Qed.
 
-
 Fixpoint ehom_to_eophom {Y : eCategory} {n : nat}
 (A B : eobj[(Y^op ** n)]) (f : A ~~{Y^op ** n}~> B) : (eop_of B) ~~{Y ** n}~> (eop_of A) :=
 match n return forall A B, A ~~{Y^op ** n}~> B -> (eop_of B) ~~{Y ** n}~> (eop_of A) with
@@ -187,6 +174,7 @@ Proof.
   by rewrite /= IHn.
 Qed.
 
+(* first projection of the delta functor *)
 Definition delta1_eobj {Y : eCategory} {n : nat} :
   eobj[(Y^op ** n × Y ** n)] -> (Y^op ** n × Y ** n)^op :=
   fun '(A, B) => (eobj_of B, eop_of A).
@@ -210,79 +198,38 @@ Qed.
 Definition delta1 {Y : eCategory} {n : nat} : Y^op ** n × Y ** n →  (Y^op ** n × Y ** n)^op :=
   {| efobj := delta1_eobj ; efmap_mor := delta1_efmap_mor ; efunct_mixin := delta1_mixin |}.
 
-  
-
 Lemma delta1_invol {Y : eCategory} {n : nat} (x : eobj[(Y^op ** n × Y ** n)]) :
   delta1_eobj (delta1_eobj x) = x.
 Proof. destruct x as [A B]. by rewrite /= eop_to_eobj_inv eobj_to_eop_inv. Qed.
 
+(* First projection of the delta functor that include the join and split functors *)
 Definition delta_pi1 {Y : eCategory} {n : nat} :
   (Y^op × Y) ** n →  ((Y^op × Y) ** n)^op := op_efunct (join n) ∘[eFUNCT] delta1 ∘[eFUNCT] split n.
 
-Definition esymS_new {Y Z : eCategory} {n : nat} (F : (Y^op × Y) ** S n →  Z) :
-  (Y^op × Y) ** S n →  Z^op × Z := <| op_efunct F ∘[eFUNCT] delta_pi1 , F |>.
-
+(* Delta functor *)
 Definition delta {Y : eCategory} {n : nat} :
   (Y^op × Y) ** n →  ((Y^op × Y) ** n)^op × (Y^op × Y) ** n :=
   <| delta_pi1 ,  eID _ |>.
 
-Definition esymS' {Y Z : eCategory} {n : nat} (F : (Y^op × Y) ** S n →  Z) :
+Definition esymS {Y Z : eCategory} {n : nat} (F : (Y^op × Y) ** S n →  Z) :
   (Y^op × Y) ** n × (Y^op × Y) →  Z^op × Z :=
-  esymS F ∘[eFUNCT] times_efunctor (@delta _ n) (eID (Y^op × Y)).
+  par_esymS F ∘[eFUNCT] times_efunctor (@delta _ n) (eID (Y^op × Y)).
 
 Definition esym {Y Z : eCategory} {n : nat} (F : (Y^op × Y) ** n →  Z)
   : (Y^op × Y) ** n →  Z^op × Z :=
   match n as m return ((Y^op × Y) ** m →  Z) -> (Y^op × Y) ** m →  Z^op × Z with
-  | O => fun F' => esym0 F'
-  | S n' => fun F' => esymS' F'
+  | O => fun F => esym0 F
+  | S n' => fun F => esymS F
   end F.
 
-Definition esym_new {Y Z : eCategory} {n : nat} (F : (Y^op × Y) ** n →  Z)
-  : (Y^op × Y) ** n →  Z^op × Z :=
-  match n as m return ((Y^op × Y) ** m →  Z) -> (Y^op × Y) ** m →  Z^op × Z with
-  | O => fun F' => esym0 F'
-  | S n' => fun F' => esymS_new F'
-  end F.
-
-Lemma esymS_ctr_prop {Y Z W : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) W) :
-  forall (x : eobj[Z^op × Z]) (A B : eobj[Y^op × Y]),
-  Contractive (@efmap _ _ (second_efunct (esymS F) x) A B).
+Lemma par_esymS_ctr_prop {Y Z W : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) W) :
+  forall A B, ContractiveSnd (@efmap _ _ (par_esymS F) A B).
 Proof.
-  intros [x1 x2] [A1 A2] [B1 B2] m [f1 f2] [g1 g2] Hfg  ; split ; simpl in * ;
-  apply @snd_funct_ctr; intros m' Hm'; destruct (Hfg m' Hm') ; by split.
+  intros [[A1 A2] [A3 A4]] [[B1 B2] [B3 B4]] [h1 h2] n [f1 f2] [g1 g2] Hfg  ; split ; simpl in * ;
+  apply @snd_funct_ctr ; try reflexivity ;
+  intros m' Hm'; destruct (Hfg m' Hm') ; by split.
 Qed.
 
-Lemma fork_ctr_snd {W X Y Z : eCategory} (F : eFunctor (Z × Y) W) (G : eFunctor (Z × Y) X) :
-  iseFunctorCtrSnd F /\ iseFunctorCtrSnd G -> iseFunctorCtrSnd (<| F, G |>) .
-Proof.
-  intros [HF HG].
-  unshelve econstructor.
-  intros x A B m f g Hfg ; split ;  simpl in *.
-  - by apply is_snd_funct_ctr . 
-  - by apply is_snd_funct_ctr . 
-Qed.
-
-(* Lemma esymS_new_ctr_prop {Y Z W : eCategory} {n} (F : eFunctorCtrSnd ((Y^op × Y) ** n) (Y^op × Y) W) : *)
-(*   iseFunctorCtrSnd (esymS_new F). *)
-(* Proof. *)
-(*   apply fork_ctr_snd ; split ; last apply toiseFunctorCtrSnd. *)
-(*   unshelve econstructor. *)
-(*   intros x [A1 A2] [B1 B2] m [f1 f2] [g1 g2] Hfg ; simpl in *. *)
-(*   rewrite -!ebimap_efmap !efmap_ecomp_efunct /=. *)
-(**)
-(*   set HH := @snd_funct_ctr _ _ _ F (join_eobj n *)
-(*          (eobj_of snd (split_eobj n x), eop_of fst (split_eobj n x))) (B2, B1) (A2, A1) m. *)
-(*           *)
-(*   apply HH. *)
-(*     apply (@is_snd_funct_ctr . *)
-(*     first apply toiseFunctorCtrSnd. *)
-(*     intros m' Hm'. destruct (Hfg m' Hm') ; by split. *)
-(*   - rewrite -!ebimap_efmap !efmap_ecomp_efunct /=. *)
-(*     apply @is_snd_funct_ctr. *)
-(*     intros m' Hm'. destruct (Hfg m' Hm') ; by split. *)
-(*    *)
-(* Admitted. *)
-
-Definition esymS_ctr {Y Z W : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y)  W)
+Definition par_esymS_ctr {Y Z W : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y)  W)
   : eFunctorCtrSnd (Z^op × Z) (Y^op × Y) (W^op × W) :=
-  {| efunct_snd := esymS F ; efunct_ctr_snd := esymS_ctr_prop F |}.
+  {| efunct_snd := par_esymS F ; efunct_ctr_snd := par_esymS_ctr_prop F |}.

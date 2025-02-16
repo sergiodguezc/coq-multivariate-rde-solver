@@ -3,19 +3,6 @@ From sgdt Require Import category ofe.
 
 (* CATEGORY OF OFE *)
 
-(* Composition of morphisms *)
-Program Definition ofe_comp {A B C : ofe} (f : B -n> C) (g : A -n> B) : A -n> C :=
-  {| ne_mor := fun x => f (g x) |}.
-Next Obligation.
-  intros n x y H; by repeat apply hom_ne.
-Qed.
-
-(* Identity morphism *)
-Program Definition ofe_id {A : ofe} : A -n> A := {| ne_mor := fun x => x |}.
-Next Obligation.
-  by intros n x y H.
-Qed.
-
 (* Satisfaction of the category laws *)
 Lemma ofe_cat_mixin : CatMixin ofe (@NonExpansiveMaps) (@ofe_id) (@ofe_comp).
 Proof. split; intros; by apply ne_eq. Qed.

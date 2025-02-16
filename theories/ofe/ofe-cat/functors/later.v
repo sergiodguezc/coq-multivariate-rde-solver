@@ -288,3 +288,66 @@ Proof.
     destruct n ; simpl ; apply hom_ne ; [by left | right].
     replace (S n - 1) with n by lia. apply Hxy. lia.
 Qed.
+
+Definition ig_from_contractive_fst {A B C : iCOFE} (f : A × B -n> C)
+  (H : ContractiveFst f) : ilaterF A × B -n> C.
+Proof.
+  exists (fun x => f (get_car (fst x), snd x)).
+  intros n [[x1] x2] [[y1] y2] [H1 H2] ; simpl in *.
+  transitivity (f (x1, y2)).
+  - apply hom_ne. split ; [reflexivity | exact H2].
+  - apply H. intros k Hk. destruct H1 ; first lia.
+    eapply ofe_mono ; eauto. lia.
+Defined.
+
+Lemma contractive_ilaterT_fst {A B C : iCOFE} (f : A × B -n> C)
+  (H : ContractiveFst f) :
+  { g : ilaterF A × B -n> C | f = g ∘ (times_mor (nt inext_nat A) id{iCOFE}) }.
+Proof.
+  exists (ig_from_contractive_fst f H); unfold ig_from_contractive_fst; simpl.
+  apply ne_eq. intros [a b]. reflexivity.
+Qed.
+
+(* Characterization of contractiveFst using ilater *)
+Lemma contractive_fst_ilater_char {A B C : iCOFE} (f : A × B -n> C) :
+  ContractiveFst f <-> exists g : ilaterF A × B -n> C, f = g ∘ (times_mor (nt inext_nat A) id{iCOFE}).
+Proof.
+  split ; intros H.
+  - destruct (contractive_ilaterT_fst f H) as [g Hg]. by exists g.
+  - destruct H as [g H].
+    rewrite H. intros x n a1 a2 Ha ; simpl.
+    apply hom_ne ; split; simpl ; last reflexivity.
+    destruct n ; [by left | right].
+    simpl. apply Ha. lia.
+Qed.
+
+Definition ig_from_contractive_snd {A B C : iCOFE} (f : A × B -n> C)
+  (H : ContractiveSnd f) : A × ilaterF B -n> C.
+Proof.
+  exists (fun x => f (fst x, get_car (snd x))).
+  intros n [x1 [x2]] [y1 [y2]] [H1 H2] ; simpl in *.
+  transitivity (f (y1, x2)).
+  - apply hom_ne. split ; [exact H1 | reflexivity].
+  - apply H. intros k Hk. destruct H2 ; first lia.
+    eapply ofe_mono ; eauto. lia.
+Defined.
+
+Lemma contractive_ilaterT_snd {A B C : iCOFE} (f : A × B -n> C)
+  (H : ContractiveSnd f) :
+  { g : A × ilaterF B -n> C | f = g ∘ (times_mor id{iCOFE} (nt inext_nat B)) }.
+Proof.
+  exists (ig_from_contractive_snd f H); unfold ig_from_contractive_snd; simpl.
+  apply ne_eq. intros [a b]. reflexivity.
+Qed.
+
+Lemma contractive_snd_ilater_char {A B C : iCOFE} (f : A × B -n> C) :
+  ContractiveSnd f <-> exists g : A × ilaterF B -n> C, f = g ∘ (times_mor id{iCOFE} (nt inext_nat B)).
+Proof.
+  split ; intros H.
+  - destruct (contractive_ilaterT_snd f H) as [g Hg]. by exists g.
+  - destruct H as [g H].
+    rewrite H. intros x n a1 a2 Ha ; simpl.
+    apply hom_ne ; split; simpl ; first reflexivity.
+    destruct n ; [by left | right].
+    simpl. apply Ha. lia.
+Qed.

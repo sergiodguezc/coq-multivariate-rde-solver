@@ -1,4 +1,4 @@
-From sgdt Require Import category_theory axioms ecategory efunctor eisomorphism.
+From sgdt Require Import category_theory ecategory efunctor eisomorphism.
 From sgdt Require Import ofe banach iCOFE ofe_ccc icofe_ccc econtractive partial_econtractive ectr_compl.
 From sgdt Require Import muF join_split ealgebra general_america_rutten ealgebra esym.
 From sgdt Require Import einstances eicofe_ctr_compl product.
@@ -29,19 +29,19 @@ Qed.
 (* Lemmas for the general case *)
 Lemma partial_esymS_prop {Y Z : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) Y)
 (A : eobj[Z^op]) (B : eobj[Z]) : forall A0 B0 : eobj[Y^op × Y],
-  Contractive (@efmap _ _ (second_efunctor_ctr (esymS_ctr F) (A, B)) A0 B0).
+  Contractive (@efmap _ _ (second_efunctor_ctr (par_esymS_ctr F) (A, B)) A0 B0).
 Proof.
   intros [A1 A2] [B1 B2] n [f1 f2] [g1 g2] Hfg ; split ; simpl in * ;
-    apply @snd_funct_ctr 
-    ; intros m Hm; destruct (Hfg m Hm) as [Hf Hg] ; by split.
+    apply @snd_funct_ctr ; try reflexivity ;
+    intros m Hm; destruct (Hfg m Hm) as [Hf Hg] ; by split.
 Qed.
 
 Definition partial_esymS {Y Z : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) Y)
   (A : Z^op) (B : Z) : eFunctorCtr (Y^op × Y) (Y^op × Y) :=
-  {| efunct := second_efunctor_ctr (esymS_ctr F) (A, B) ; efunct_ctr := partial_esymS_prop F A B |}.
+  {| efunct := second_efunctor_ctr (par_esymS_ctr F) (A, B) ; efunct_ctr := partial_esymS_prop F A B |}.
 
 Lemma partial_esymS_eq {Y Z : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) Y)
-  (A : Z^op) (B : Z) : partial_esymS F A B = second_efunctor_ctr (esymS_ctr F) (A, B).
+  (A : Z^op) (B : Z) : partial_esymS F A B = second_efunctor_ctr (par_esymS_ctr F) (A, B).
 Proof. apply efunctor_ctr_eq; reflexivity. Qed.
 
 Lemma parametrized_initial_algebras {Y Z : eCategory} (F : eFunctorCtrSnd Z (Y^op × Y) Y)
@@ -142,7 +142,7 @@ Qed.
 
 Lemma einitial_algebra_esymS_ctr {Y : eCategory} `{eCategoryCtrComplete Y}
   {n : nat} (F : eFunctorCtrSnd ((Y^op × Y) ** S n) (Y^op × Y) Y) :
-  forall A, eInitialAlg (second_efunctor_ctr (esymS_ctr F) A).
+  forall A, eInitialAlg (second_efunctor_ctr (par_esymS_ctr F) A).
 Proof.
   intros [A B]; rewrite -partial_esymS_eq;
   destruct (unparametrized_mv_fixed_points F A B) as [X [W [HZ HW]]] ;
@@ -151,7 +151,7 @@ Qed.
 
 Definition FixFS {Y : eCategory}  `{eCategoryCtrComplete Y} {n}
   (F : eFunctorCtrSnd ((Y^op × Y) ** (S n)) (Y^op × Y) Y) :=
-    (psnd_efunct ∘[eFUNCT] (muF (@esymS_ctr _ _ _ F) (einitial_algebra_esymS_ctr F)) ∘[eFUNCT] delta).
+    (psnd_efunct ∘[eFUNCT] (muF (@par_esymS_ctr _ _ _ F) (einitial_algebra_esymS_ctr F)) ∘[eFUNCT] delta).
 
 Theorem general_existence {Y : eCategory}  `{eCategoryCtrComplete Y} {n}
   (F : eFunctorCtrSnd ((Y^op × Y) ** n) (Y^op × Y) Y) :
@@ -165,24 +165,24 @@ Proof.
     intros A.
     assert (H1 : forall A, FixF A = snd (lfixpointF _ (Halg (delta A)))) by reflexivity.
     
-    destruct ((lfixpointF (second_efunctor_ctr (esymS_ctr F) (delta A)) (Halg (delta A)))) as [X1 X2] eqn:HX.
+    destruct ((lfixpointF (second_efunctor_ctr (par_esymS_ctr F) (delta A)) (Halg (delta A)))) as [X1 X2] eqn:HX.
     destruct A as [An A'] eqn:HA1.
 
     assert ((F∘[eFUNCT] (<| eID ((Y^op × Y) ** S n), esym FixF |>)) (An, A')
-        = F ((An, A'), esymS FixF (delta An, A') )) as -> by done.
+        = F ((An, A'), par_esymS FixF (delta An, A') )) as -> by done.
 
     destruct (delta An) as [Dop D]eqn:Hd , A' as [Aop Ah] eqn:HA2.
 
-    assert (esymS FixF ( ((Dop, D), (Aop, Ah)) : eobj[(((Y^op × Y) ** n)^op × (Y^op × Y) ** n) × (Y^op × Y)] )
+    assert (par_esymS FixF ( ((Dop, D), (Aop, Ah)) : eobj[(((Y^op × Y) ** n)^op × (Y^op × Y) ** n) × (Y^op × Y)] )
       = (FixF (Dop, (Ah, Aop)), FixF (D, (Aop, Ah))) ) as H2 by done; rewrite H2.
 
     assert (D = An) as -> by (by inversion Hd).
     assert (FixF (An, (Aop, Ah)) = X2) as H3 by (rewrite H1 HX //); rewrite !H3.
 
-    assert (esymS FixF (delta An, (Aop, Ah)) = (FixF (Dop, (Ah, Aop)), FixF (An, (Aop, Ah))) ) as H4.
+    assert (par_esymS FixF (delta An, (Aop, Ah)) = (FixF (Dop, (Ah, Aop)), FixF (An, (Aop, Ah))) ) as H4.
     { rewrite -H2 Hd //. }
     rewrite H3 in H4.
-    assert (X2 = snd (esymS FixF (delta An, (Aop, Ah)))) as HX2 by (rewrite H4; done).
+    assert (X2 = snd (par_esymS FixF (delta An, (Aop, Ah)))) as HX2 by (rewrite H4; done).
 
     set Dnop := (join_eobj n (eobj_of snd (split_eobj n Dop), eop_of fst (split_eobj n Dop))).
     assert (Dnop = An) as H5.
@@ -219,8 +219,8 @@ Proof.
       set H13 := @einitial_unique _ _ Halg2 (toEInitialAlg _ H10).
       rewrite H8.
       
-      assert (H14 : snd (lfixpointF (second_efunctor_ctr (esymS_ctr F) (An, (Aop, Ah), (Zop, (Ah, Aop)))) Halg2)
-                  ≃ snd (lfixpointF (second_efunctor_ctr (esymS_ctr F) (An, (Aop, Ah), (Zop, (Ah, Aop)))) (toEInitialAlg _ H10) )).
+      assert (H14 : snd (lfixpointF (second_efunctor_ctr (par_esymS_ctr F) (An, (Aop, Ah), (Zop, (Ah, Aop)))) Halg2)
+                  ≃ snd (lfixpointF (second_efunctor_ctr (par_esymS_ctr F) (An, (Aop, Ah), (Zop, (Ah, Aop)))) (toEInitialAlg _ H10) )).
       { by apply (@efunctor_preserve_eiso (eprod_cat Y^op Y) Y psnd_efunct). }
       unfold Halg2 in H14.
       rewrite H12.
@@ -233,8 +233,8 @@ Proof.
       apply eiso_to_eprod_cat ; split  ; last exact eiso_refl ; apply eiso_op; apply H8.
     }
     eapply eiso_trans ; last exact H9.
-    rewrite {2}HX2 /esymS /esymS_eobj {2}/efobj Hd /snd H1.
-    destruct (eiso_eprod_cat (@lfixpointF_iso _ (second_efunctor_ctr (esymS_ctr F) (delta A)) (Halg (delta A)))) as [_ H10].
+    rewrite {2}HX2 /par_esymS /par_esymS_eobj {2}/efobj Hd /snd H1.
+    destruct (eiso_eprod_cat (@lfixpointF_iso _ (second_efunctor_ctr (par_esymS_ctr F) (delta A)) (Halg (delta A)))) as [_ H10].
     rewrite -HA1; eapply eiso_trans ; first apply H10.
     rewrite HA1 HX; apply eiso_refl.
 Qed.
@@ -247,8 +247,9 @@ Proof.
   apply muF_ctr.
   set F' := CtrToFst F.
   unshelve econstructor.
-  intros [x1 x2] [[A1 [A2 A3]] [A4 [A5 A6]]] [[B1 [B2 B3]] [B4 [B5 B6]]] m.
-  intros [[f1 [f2 f3]] [f4 [f5 f6]]] [[g1 [g2 g3]] [g4 [g5 g6]]] Hfg;
+  intros [[[A1 [A6 A7]] [A4 [A5 A8]]] [A2 A3]] [[[B1 [B6 B7]] [B4 [B5 B8]]] [B2 B3]].
+  intros [h1 h2] m [[f1 [f2 f3]] [f4 [f5 f6]]] [[g1 [g2 g3]] [g4 [g5 g6]]] Hfg.
+  simpl in *.
   split ; simpl in *.
   - apply (is_efunct_ctr_fst F') ; first (apply toiseFunctorCtrFst).
     intros k Hk; destruct (Hfg k Hk); apply H0.
@@ -270,24 +271,24 @@ Proof.
 
     assert (H1 : forall A, FixF A = snd (lfixpointF _ (Halg (delta A)))) by reflexivity.
     
-    destruct ((lfixpointF (second_efunctor_ctr (esymS_ctr G) (delta A)) (Halg (delta A)))) as [X1 X2] eqn:HX.
+    destruct ((lfixpointF (second_efunctor_ctr (par_esymS_ctr G) (delta A)) (Halg (delta A)))) as [X1 X2] eqn:HX.
     destruct A as [An A'] eqn:HA1.
 
     assert ((F∘[eFUNCT] (<| eID ((Y^op × Y) ** S n), esym FixF |>)) (An, A')
-        = F ((An, A'), esymS FixF (delta An, A') )) as -> by done.
+        = F ((An, A'), par_esymS FixF (delta An, A') )) as -> by done.
 
     destruct (delta An) as [Dop D]eqn:Hd , A' as [Aop Ah] eqn:HA2.
 
-    assert (esymS FixF ( ((Dop, D), (Aop, Ah)) : eobj[(((Y^op × Y) ** n)^op × (Y^op × Y) ** n) × (Y^op × Y)] )
+    assert (par_esymS FixF ( ((Dop, D), (Aop, Ah)) : eobj[(((Y^op × Y) ** n)^op × (Y^op × Y) ** n) × (Y^op × Y)] )
       = (FixF (Dop, (Ah, Aop)), FixF (D, (Aop, Ah))) ) as H2 by done; rewrite H2.
 
     assert (D = An) as -> by (by inversion Hd).
     assert (FixF (An, (Aop, Ah)) = X2) as H3 by (rewrite H1 HX //); rewrite !H3.
 
-    assert (esymS FixF (delta An, (Aop, Ah)) = (FixF (Dop, (Ah, Aop)), FixF (An, (Aop, Ah))) ) as H4.
+    assert (par_esymS FixF (delta An, (Aop, Ah)) = (FixF (Dop, (Ah, Aop)), FixF (An, (Aop, Ah))) ) as H4.
     { rewrite -H2 Hd //. }
     rewrite H3 in H4.
-    assert (X2 = snd (esymS FixF (delta An, (Aop, Ah)))) as HX2 by (rewrite H4; done).
+    assert (X2 = snd (par_esymS FixF (delta An, (Aop, Ah)))) as HX2 by (rewrite H4; done).
 
     set Dnop := (join_eobj n (eobj_of snd (split_eobj n Dop), eop_of fst (split_eobj n Dop))).
     assert (Dnop = An) as H5.
@@ -324,8 +325,8 @@ Proof.
       set H13 := @einitial_unique _ _ Halg2 (toEInitialAlg _ H10).
       rewrite H8.
       
-      assert (H14 : snd (lfixpointF (second_efunctor_ctr (esymS_ctr G) (An, (Aop, Ah), (Zop, (Ah, Aop)))) Halg2)
-                  ≃ snd (lfixpointF (second_efunctor_ctr (esymS_ctr G) (An, (Aop, Ah), (Zop, (Ah, Aop)))) (toEInitialAlg _ H10) )).
+      assert (H14 : snd (lfixpointF (second_efunctor_ctr (par_esymS_ctr G) (An, (Aop, Ah), (Zop, (Ah, Aop)))) Halg2)
+                  ≃ snd (lfixpointF (second_efunctor_ctr (par_esymS_ctr G) (An, (Aop, Ah), (Zop, (Ah, Aop)))) (toEInitialAlg _ H10) )).
       { by apply (@efunctor_preserve_eiso (eprod_cat Y^op Y) Y psnd_efunct). }
       unfold Halg2 in H14.
       rewrite H12.
@@ -338,8 +339,8 @@ Proof.
       apply eiso_to_eprod_cat ; split  ; last exact eiso_refl ; apply eiso_op; apply H8.
     }
     eapply eiso_trans ; last exact H9.
-    rewrite {2}HX2 /esymS /esymS_eobj {2}/efobj Hd /snd H1.
-    destruct (eiso_eprod_cat (@lfixpointF_iso _ (second_efunctor_ctr (esymS_ctr G) (delta A)) (Halg (delta A)))) as [_ H10].
+    rewrite {2}HX2 /par_esymS /par_esymS_eobj {2}/efobj Hd /snd H1.
+    destruct (eiso_eprod_cat (@lfixpointF_iso _ (second_efunctor_ctr (par_esymS_ctr G) (delta A)) (Halg (delta A)))) as [_ H10].
     rewrite -HA1; eapply eiso_trans ; first apply H10.
     rewrite HA1 HX; apply eiso_refl.
 Qed.

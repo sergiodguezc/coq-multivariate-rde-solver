@@ -188,22 +188,22 @@ Lemma efmap_ecomp_efunct {X Y Z : eCategory} (F : eFunctor Y Z) (G : eFunctor X 
   efmap (F ∘[eFUNCT] G) f = efmap F (efmap G f).
 Proof. reflexivity. Qed.
 
-Lemma times_efunctor_mixin {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) :
-  eFunctMixin (X × Z) (Y × W) (fun x => (F (fst x), G (snd x)))
-              (fun A B f => (efmap F (fst f), efmap G (snd f))).
-Proof.
-  unshelve econstructor.
-  - intros [A1 A2] [B1 B2] n [f1 f2] [g1 g2] [H1 H2]; split ; 
-    by repeat apply hom_ne.
-  - intros [A1 A2]. by simplify_efunct. 
-  - intros [A1 A2] [B1 B2] [C1 C2] [f1 f2] [g1 g2]. by simplify_efunct.
-Qed.
+(* Lemma times_efunctor_mixin {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : *)
+(*   eFunctMixin (X × Z) (Y × W) (fun x => (F (fst x), G (snd x))) *)
+(*               (fun A B f => (efmap F (fst f), efmap G (snd f))). *)
+(* Proof. *)
+(*   unshelve econstructor. *)
+(*   - intros [A1 A2] [B1 B2] n [f1 f2] [g1 g2] [H1 H2]; split ;  *)
+(*     by repeat apply hom_ne. *)
+(*   - intros [A1 A2]. by simplify_efunct.  *)
+(*   - intros [A1 A2] [B1 B2] [C1 C2] [f1 f2] [g1 g2]. by simplify_efunct. *)
+(* Qed. *)
 
-Definition times_efunctor {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : eFunctor (X × Z) (Y × W) := {|
-  efobj := fun x : X × Z => (F (fst x), G (snd x) ) : Y × W;
-  efmap_mor := fun A B f => (efmap F (fst f), efmap G (snd f));
-  efunct_mixin := @times_efunctor_mixin X Y Z W F G
- |}.
+(* Definition times_efunctor {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : eFunctor (X × Z) (Y × W) := {| *)
+(*   efobj := fun x : X × Z => (F (fst x), G (snd x) ) : Y × W; *)
+(*   efmap_mor := fun A B f => (efmap F (fst f), efmap G (snd f)); *)
+(*   efunct_mixin := @times_efunctor_mixin X Y Z W F G *)
+(*  |}. *)
 
 Lemma pfst_ne {Y Z : eCategory} (A B : eobj[Y × Z]) :
   NonExpansive (fun f : A ~~{ Y × Z }~> B => fst f).
@@ -379,6 +379,9 @@ Definition fork_efunct {X Y Z : eCategory} (F : eFunctor Z X) (G : eFunctor Z Y)
  |}.
 
 Notation "<| F , G |>" := (fork_efunct F G) (at level 40) : ofe_category_scope.
+
+Definition times_efunctor {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : eFunctor (X × Z) (Y × W) :=
+  <| F ∘[eFUNCT] pfst_efunct, G ∘[eFUNCT] psnd_efunct |>.
 
 Lemma drop_one_efunct_mixin {X Y : eCategory} (F : eFunctor (one_ecat × X) Y) :
   eFunctMixin X Y (fun x => F (tt, x)) (fun A B f => ebimap[F] (eid{one_ecat} tt) f).

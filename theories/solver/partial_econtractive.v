@@ -1,13 +1,13 @@
-From sgdt Require Import ecategory ofe iCOFE icofe_ccc einstances efunctor econtractive.
+From sgdt Require Import axioms ecategory ofe iCOFE icofe_ccc einstances efunctor econtractive.
 
-Require Import ssreflect PropExtensionality.
+Require Import ssreflect PropExtensionality Lia.
 (*
   Partial contractive functors
 *)
 
 Record eFunctorCtrSnd (X Y Z : eCategory)  : Type := {
   efunct_snd :> eFunctor (eprod_cat X Y) Z;
-  efunct_ctr_snd {x : X} {A B} : Contractive (@efmap _ _ (second_efunct efunct_snd x) A B)
+  efunct_ctr_snd {A B} : ContractiveSnd (@efmap _ _ efunct_snd A B)
 }.
 (* Coercion efunct_snd : eFunctorCtrSnd >-> eFunctor. *)
 Arguments efunct_snd {_ _ _} .
@@ -22,7 +22,7 @@ Proof.
 Qed.
 
 Record iseFunctorCtrSnd {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) : Prop := {
-  is_efunct_ctr_snd {x : X} {A B} : Contractive (@efmap _ _ (second_efunct F x) A B)
+  is_efunct_ctr_snd {A B} : ContractiveSnd (@efmap _ _ F A B)
 }.
 
 Lemma second_efunctor_ctr_partial {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z)
@@ -30,23 +30,32 @@ Lemma second_efunctor_ctr_partial {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z)
   iseFunctorCtr (second_efunct F x).
 Proof.
   refine {| is_efunct_ctr := _ |}.
-  apply efunct_ctr_snd.
+  intros A B n f g Hfg.
+  by apply efunct_ctr_snd.
 Qed.
 
-Lemma snd_funct_ctr {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) {A B C} :
-  forall n  (y1 y2 : B ~~> C), dist_later n y1 y2 ->
-  ebimap[F] (@eid_mor X A tt) y1 ≡{ n }≡ ebimap[F] (@eid_mor X A tt) y2.
+Lemma snd_funct_ctr {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) {A B C D} :
+  forall n (x1 x2 : A ~~> D) (y1 y2 : B ~~> C),
+  (x1 ≡{ n }≡ x2) -> 
+  dist_later n y1 y2 ->
+  ebimap[F] x1 y1 ≡{ n }≡ ebimap[F] x2 y2.
 Proof.
-  intros n y1 y2 H.
-  apply efunct_ctr_snd. exact H.
+  intros n x1 x2 y1 y2 Hx Hy.
+  transitivity (ebimap[F] x1 y2).
+  - apply efunct_ctr_snd. exact Hy.
+  - apply hom_ne. split ; first exact Hx. reflexivity.
 Qed.
 
-Lemma is_snd_funct_ctr {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) (H : iseFunctorCtrSnd F) {A B C} :
-  forall n  (y1 y2 : B ~~> C), dist_later n y1 y2 ->
-  ebimap[F] (@eid_mor X A tt) y1 ≡{ n }≡ ebimap[F] (@eid_mor X A tt) y2.
+Lemma is_snd_funct_ctr {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) (H : iseFunctorCtrSnd F) {A B C D} :
+  forall n (x1 x2 : A ~~> D) (y1 y2 : B ~~> C),
+  (x1 ≡{ n }≡ x2) -> 
+  dist_later n y1 y2 ->
+  ebimap[F] x1 y1 ≡{ n }≡ ebimap[F] x2 y2.
 Proof.
-  intros n y1 y2 H1.
-  apply (is_efunct_ctr_snd F H). exact H1.
+  intros n x1 x2 y1 y2 H1 H2.
+  transitivity (ebimap[F] x1 y2).
+  - apply ((is_efunct_ctr_snd F) H). exact H2.
+  - apply hom_ne. split ; first exact H1. reflexivity.
 Qed.
 
 Lemma toeFunctorCtrSnd {X Y Z : eCategory} {F : eFunctor (eprod_cat X Y) Z} (H : iseFunctorCtrSnd F) : eFunctorCtrSnd X Y Z.
@@ -59,11 +68,8 @@ Lemma compose_efunctor_ctrsnd_left {W X Y Z : eCategory}
 (F : eFunctorCtrSnd W X Y) (G : eFunctor Y Z) : iseFunctorCtrSnd (G∘[eFUNCT] F).
 Proof.
   unshelve econstructor.
-  intros x A B n f g Hfg ; simpl.
-  rewrite -!ebimap_efmap.
-  rewrite !efmap_ecomp_efunct. 
-  apply hom_ne. 
-  by apply snd_funct_ctr.
+  intros [A1 A2] [B1 B2] h n f g Hfg ; simpl in *.
+  apply efmap_mor_ne, snd_funct_ctr ; [reflexivity | apply Hfg]. 
 Qed.
 
 Lemma compose_efunctor_isctrsnd_left {W X Y Z : eCategory}
@@ -71,17 +77,13 @@ Lemma compose_efunctor_isctrsnd_left {W X Y Z : eCategory}
   : iseFunctorCtrSnd (G∘[eFUNCT] F).
 Proof.
   unshelve econstructor.
-  intros x A B n f g Hfg ; simpl.
-  rewrite -!ebimap_efmap.
-  rewrite !efmap_ecomp_efunct. 
-  apply hom_ne. 
-  rewrite ebimap_efmap.
-  by apply (is_efunct_ctr_snd F H).
+  intros [A1 A2] [B1 B2] h n f g Hfg ; simpl in *.
+  apply efmap_mor_ne, (is_snd_funct_ctr F H) ; [ reflexivity | apply Hfg].
 Qed.
 
 Record eFunctorCtrFst (X Y Z : eCategory)  : Type := {
   efunct_fst :> eFunctor (eprod_cat X Y) Z;
-  efunct_ctr_fst {y : Y} {A B} : Contractive (@efmap _ _ (first_efunct efunct_fst y) A B)
+  efunct_ctr_fst {A B} : ContractiveFst (@efmap _ _ efunct_fst A B)
 }.
 Arguments efunct_fst {_ _ _} .
 
@@ -94,7 +96,7 @@ Proof.
 Qed.
 
 Record iseFunctorCtrFst {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) : Prop := {
-  is_efunct_ctr_fst {y : Y} {A B} : Contractive (@efmap _ _ (first_efunct F y) A B)
+  is_efunct_ctr_fst {A B} : ContractiveFst (@efmap _ _ F A B)
 }.
 
 Lemma first_efunctor_ctr_partial {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z)
@@ -102,23 +104,32 @@ Lemma first_efunctor_ctr_partial {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z)
   iseFunctorCtr (first_efunct F y).
 Proof.
   refine {| is_efunct_ctr := _ |}.
-  apply efunct_ctr_fst.
+  intros A B n f g Hfg.
+  by apply efunct_ctr_fst.
 Qed.
 
-Lemma fst_funct_ctr {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) {A B C} :
-  forall n  (x1 x2 : A ~~> B), dist_later n x1 x2 ->
-  ebimap[F] x1 (@eid_mor Y C tt) ≡{ n }≡ ebimap[F] x2 (@eid_mor Y C tt).
+Lemma fst_funct_ctr {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) {A B C D} :
+  forall n (x1 x2 : A ~~> B) (y1 y2 : C ~~> D),
+  (y1 ≡{ n }≡ y2) ->
+  dist_later n x1 x2 ->
+  ebimap[F] x1 y1 ≡{ n }≡ ebimap[F] x2 y2.
 Proof.
-  intros n x1 x2 H.
-  apply efunct_ctr_fst. exact H.
+  intros n x1 x2 y1 y2 Hy Hx.
+  transitivity (ebimap[F] x2 y1).
+  - apply efunct_ctr_fst. exact Hx.
+  - apply hom_ne. split ; first reflexivity. exact Hy.
 Qed.
 
-Lemma is_fst_funct_ctr {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) (H : iseFunctorCtrFst F) {A B C} :
-  forall n  (x1 x2 : A ~~> B), dist_later n x1 x2 ->
-  ebimap[F] x1 (@eid_mor Y C tt) ≡{ n }≡ ebimap[F] x2 (@eid_mor Y C tt).
+Lemma is_fst_funct_ctr {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) (H : iseFunctorCtrFst F) {A B C D} :
+  forall n (x1 x2 : A ~~> B) (y1 y2 : C ~~> D),
+  (y1 ≡{ n }≡ y2) ->
+  dist_later n x1 x2 ->
+  ebimap[F] x1 y1 ≡{ n }≡ ebimap[F] x2 y2.
 Proof.
-  intros n x1 x2 H1.
-  apply (is_efunct_ctr_fst F H). exact H1.
+  intros n x1 x2 y1 y2 Hy Hx.
+  transitivity (ebimap[F] x2 y1).
+  - apply ((is_efunct_ctr_fst F) H). exact Hx.
+  - apply hom_ne. split ; first reflexivity. exact Hy.
 Qed.
 
 Lemma toeFunctorCtrFst {X Y Z : eCategory} {F : eFunctor (eprod_cat X Y) Z} (H : iseFunctorCtrFst F) : eFunctorCtrFst X Y Z.
@@ -153,60 +164,98 @@ Proof.
   - reflexivity.
 Defined.
 
+  
+Lemma fork_ctr_snd {W X Y Z : eCategory} (F : eFunctor (Z × Y) W) (G : eFunctor (Z × Y) X) :
+  iseFunctorCtrSnd F /\ iseFunctorCtrSnd G -> iseFunctorCtrSnd (<| F, G |>) .
+Proof.
+  intros [HF HG].
+  unshelve econstructor.
+  intros [A1 A2] [B1 B2] h n f g Hfg ; split ; simpl in *.
+  - apply (is_snd_funct_ctr F HF) ; [reflexivity | apply Hfg].
+  - apply (is_snd_funct_ctr G HG) ; [reflexivity | apply Hfg].
+Qed.
+
 (*
   Characterization of contractive functors using the later category
  *)
 
-(* Theorem G_from_efunct_ctr_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) *)
-(*   : eFunctor (eprod_cat X (later_ecat Y)) Z. *)
-(* Proof. *)
-(*   unshelve eexists. *)
-(*   - unshelve eapply mkEFUNCT. *)
-(*     + intros A. exact (F A). *)
-(*     + intros [A1 A2] [B1 B2]. simpl in *. *)
-(*       unshelve epose (g := _ : (A ~~> B) -c> (F A ~~> F B)). *)
-(*       {  *)
-(*         exists (fun (f : A ~~> B) => efmap F f). apply efunct_ctr. *)
-(*       } *)
-(*       destruct (contractive_ilaterT g) as [g' geq]. *)
-(*       apply g'. *)
-(*     + intros A. simpl. by simplify_efunct. *)
-(*     + intros A B C [f] [g]. simpl. by simplify_efunct. *)
-(*   - intros A B. simpl. *)
-(*     unshelve eexists. *)
-(*     + intros [f]. apply (efmap F f). *)
-(*     + intros n [f1] [f2] Hf.  *)
-(*       apply efunct_ctr. *)
-(*       intros m Hm. *)
-(*       destruct Hf ; [lia | ]. *)
-(*       eapply ofe_mono ; eauto. lia. *)
-(*   - intros A. simpl. by simplify_efunct. *)
-(*   - intros A B C [f] [g]. simpl. by simplify_efunct. *)
-(* Defined. *)
+Definition G_from_efunct_ctr_snd_efmap {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) :
+  forall A B : eobj[X × later_ecat Y],
+  A ~~{ X × later_ecat Y }~> B ->
+  F A ~~{ Z }~> F B.
+Proof.
+  intros [A1 A2] [B1 B2] [f1 [f2]].
+  apply (ebimap[F] f1 f2).
+Defined.
 
-(* Lemma contractive_later_ecat_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) :  *)
-(*   { G : eFunctor (eprod_cat X (later_ecat Y)) Z | efunct_snd F = compose_efunctor G (times_efunctor (eID X) (enext_efunctor Y)) }. *)
-(* Proof. *)
-(* Admitted. *)
-(**)
-(* Lemma contractive_later_ecat_fst {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) :  *)
-(*   { G : eFunctor (eprod_cat (later_ecat X) Y) Z | efunct_fst F = compose_efunctor G (times_efunctor (enext_efunctor X) (eID Y)) }. *)
-(* Proof. *)
-(* Admitted. *)
+Lemma G_from_efunct_ctr_snd_mixin {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) :
+  eFunctMixin (eprod_cat X (later_ecat Y)) Z F (G_from_efunct_ctr_snd_efmap F).
+Proof.
+  unshelve econstructor.
+  - intros [A1 A2] [B1 B2] n [f1 [f2]] [g1 [g2]] [Hfg1 Hfg2].
+    transitivity (ebimap[F] g1 f2).
+    + apply hom_ne; split ;  [exact Hfg1 | reflexivity].
+    + apply efunct_ctr_snd. intros m Hm.
+      destruct Hfg2 ; [lia | ].
+      eapply ofe_mono ; eauto. lia.
+  - intros [A1 A2]. simpl. rewrite ebimap_id //. 
+  - intros [A1 A2] [B1 B2] [C1 C2] [f1 [f2]] [g1 [g2]]; simpl in *.
+    by rewrite ebimap_ecompose.
+Qed.
 
-(*
-  Partial contractive functors
- *)
+Definition G_from_efunct_ctr_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z)
+  : eFunctor (eprod_cat X (later_ecat Y)) Z :=
+  {| efobj (X : eobj[X × later_ecat Y]) := F X ;
+     efmap_mor := G_from_efunct_ctr_snd_efmap F ;
+     efunct_mixin := G_from_efunct_ctr_snd_mixin F |}.
 
-(* Lemma second_efunctor_ctr_partial {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) *)
-(*   (H : eFunctorCtrSnd F) (x : X) : *)
-(*   iseFunctorCtr (second_efunct F x). *)
-(* Proof. *)
-(*   refine {| is_efunct_ctr := _ |}. *)
-(*   intros A B n f g Hfg. *)
-(*   destruct H as [G Geq]. rewrite Geq. *)
-(*   unfold compose_efunctor. unfold second_efunct.  *)
-(*   unfold ebimap, efmap. simpl. *)
-(*   apply hom_ne ; split ; first reflexivity. *)
-(*   destruct n; simpl ; [left ; trivial | right ; apply Hfg ; lia]. *)
-(* Qed. *)
+Lemma contractive_later_ecat_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) : 
+  { G : eFunctor (eprod_cat X (later_ecat Y)) Z | efunct_snd F = compose_efunctor G (times_efunctor (eID X) (enext_efunctor Y)) }.
+Proof.
+  exists (G_from_efunct_ctr_snd F).
+  unshelve eapply efunctor_eq.
+  - apply functional_extensionality_dep; intros [A1 A2]; reflexivity.
+  - intros [A1 A2] [B1 B2] [f1 f2]; simpl in *.
+    rewrite -ebimap_efmap /= /eprod_mor.
+Admitted.
+
+
+Definition G_from_efunct_ctr_fst_efmap {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) :
+  forall A B : eobj[X × later_ecat Y],
+  A ~~{ later_ecat X × Y }~> B ->
+  F A ~~{ Z }~> F B.
+Proof.
+  intros [A1 A2] [B1 B2] [[f1] f2]; apply (ebimap[F] f1 f2).
+Defined.
+    
+Lemma G_from_efunct_ctr_fst_mixin {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) :
+  eFunctMixin (eprod_cat (later_ecat X) Y) Z F (G_from_efunct_ctr_fst_efmap F).
+Proof.
+  unshelve econstructor.
+  - intros [A1 A2] [B1 B2] n [[f1] f2] [[g1] g2] [Hfg1 Hfg2] ; simpl in *.
+    transitivity (ebimap[F] f1 g2).
+    + apply hom_ne; split ; [reflexivity | exact Hfg2 ].
+    + apply efunct_ctr_fst. intros m Hm.
+      destruct Hfg1 ; [lia | ].
+      eapply ofe_mono ; eauto; lia.
+  - intros [A1 A2]. simpl. rewrite ebimap_id //. 
+  - intros [A1 A2] [B1 B2] [C1 C2] [[f1] f2] [[g1] g2]; simpl in *.
+    by rewrite ebimap_ecompose.
+Qed.
+
+Definition G_from_efunct_ctr_fst {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z)
+  : eFunctor (eprod_cat (later_ecat X) Y) Z :=
+  {| efobj (X : eobj[(later_ecat X) × Y]) := F X ;
+     efmap_mor := G_from_efunct_ctr_fst_efmap F ;
+     efunct_mixin := G_from_efunct_ctr_fst_mixin F |}.
+
+Lemma contractive_later_ecat_fst {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) : 
+  { G : eFunctor (eprod_cat (later_ecat X) Y) Z | efunct_fst F = compose_efunctor G (times_efunctor (enext_efunctor X) (eID Y)) }.
+Proof.
+  exists (G_from_efunct_ctr_fst F).
+  unshelve eapply efunctor_eq.
+  - apply functional_extensionality_dep; intros [A1 A2]; reflexivity.
+  - intros [A1 A2] [B1 B2] [f1 f2]; simpl in *.
+    rewrite -ebimap_efmap /= /eprod_mor.
+Admitted.
+

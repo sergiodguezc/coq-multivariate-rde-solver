@@ -43,7 +43,7 @@ Proof.
     apply hom_ne; split ; simpl.
     + apply hom_ne. split ; first reflexivity.
       apply efmap_mor_ne. split ; simpl ; reflexivity.
-    + by apply snd_funct_ctr.
+    + apply snd_funct_ctr ; [reflexivity | exact Hxy].
 Defined.
 
 Lemma T_def {Y Z : eCategory}
@@ -93,13 +93,14 @@ Proof.
     + apply hom_ne ; split ; first reflexivity.
       apply hom_ne ; split  ; first apply Hfg.
       reflexivity.
-    + apply snd_funct_ctr. intros m Hm.  lia.
+    + apply snd_funct_ctr ; first reflexivity.
+      intros m Hm.  lia.
   - apply hom_ne ; split ; simpl ; last reflexivity.
     apply hom_ne ; split ; simpl.
     + apply hom_ne ; split ; first reflexivity.
       apply hom_ne ; split ; first apply Hfg.
       reflexivity.
-    + apply snd_funct_ctr. intros m Hm.  
+    + apply snd_funct_ctr; first reflexivity. intros m Hm.  
       eapply ofe_mono with (n := n); [|lia]. rewrite Hh Ht.
       apply IHn. eapply ofe_mono ; [apply Hfg | lia].
 Qed.
@@ -227,17 +228,13 @@ Proof.
   - apply hom_ne; split ; simpl ; first reflexivity.
     apply hom_ne ; split ; simpl ;  last reflexivity.
     apply hom_ne ; split ; simpl .
-    + set H3 := @fst_funct_ctr Y Z Z (toeFunctorCtrFst H1).
-      simpl in H3.
-      by apply H3.
-    + apply snd_funct_ctr. intros m Hm. lia.
+    + apply (@fst_funct_ctr Y Z Z (toeFunctorCtrFst H1)) ; [reflexivity | exact Hfg].
+    + apply snd_funct_ctr ; first reflexivity. intros m Hm. lia.
   - apply hom_ne; split ; simpl ; first reflexivity.
     apply hom_ne ; split ; simpl ;  last reflexivity.
     apply hom_ne; split ; simpl.
-    + set H3 := @fst_funct_ctr Y Z Z (toeFunctorCtrFst H1).
-      simpl in H3.
-      by apply H3.
-    + apply snd_funct_ctr. intros m Hm. 
+    + apply (@fst_funct_ctr Y Z Z (toeFunctorCtrFst H1)) ; [reflexivity | exact Hfg].
+    + apply snd_funct_ctr; first reflexivity. intros m Hm. 
       eapply ofe_mono with n ; last lia.
       rewrite Hx' Hy'. rewrite !T_def. simpl.
       assert (Hfg2 : dist_later n x y) .

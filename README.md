@@ -4,6 +4,7 @@ _Accompanying Coq sources for the paper: Solving Multivariate Recursive Domain E
 A Coq formalization and solver for general multivariate recursive domain
 equations, enabling the construction and verification of solutions for
 recursive structures in programming language semantics and formal methods.
+The paper is located in the [**paper**](paper) folder.
 
 ## Requirements and compilation instructions
 The Coq formalization does not have any dependencies beyond Coq itself. The
@@ -130,12 +131,30 @@ covers a more general setting.
 | Terminal object in OFE[^1] | Page 3, Lemma 2.5 | [`ofe_ccc.v`](theories/ofe/ofe-cat/structure/ofe_ccc.v) | `Instance  OFE_Terminal` |  |
 | Product object in OFE[^1] | Page 3, Lemma 2.6 | [`ofe_ccc.v`](theories/ofe/ofe-cat/structure/ofe_ccc.v)| `Instance OFE_Product` |  |
 | Exponential object in OFE[^1] | Page 3, Lemma 2.7 | [`ofe_ccc.v`](theories/ofe/ofe-cat/structure/ofe_ccc.v) | `Instance OFE_CCC` |  |
-| Later EndoFunctor[^2] |  Page 6, Definition 3.8 | [`later.v`](theories/ofe/ofe-cat/functors/later.v) | `Instance OFE_Later` |  |
+| Later EndoFunctor[^2] |  Page 3, Definition 2.8 and 2.9 | [`later.v`](theories/ofe/ofe-cat/functors/later.v) | `Definition oLaterF` |  |
 | Cauchy Chain | Page 4, Definition 2.11 | [`ofe.v`](theories/ofe/ofe.v) | `Record cchain` |  |
 | Category of COFEs | Mentioned in page 4 | [`COFE.v`](theories/ofe/ofe-cat/categories/COFE.v) | `Definition COFE` |  |
-| Contractive functions |  Page 2, Definition 2.12 | [`ofe.v`](theories/ofe/ofe.v) | `Record ContractiveMaps` | `A -c> B`  |
-| Partially Contractive functions[^3] |  Page 4, Definition 2.17 | [`ofe.v`](theories/ofe/ofe.v) | `Definition ContractiveFst` | `A -c> B`  |
+| Contractive functions |  Page 2, Definition 2.12 | [`ofe.v`](theories/ofe/ofe.v) | `Record ContractiveMaps` | `A -c> B` |
+| Properties of Contractive morphisms |  Page 4, Lemma 2.14 | [`ofe.v`](theories/ofe.ofe.v) | `Program Definition comp_ctr_ne_contractive` `Program Definition comp_ne_ctr_contractive` `Program Definition prod_ctr_contractive` |  |
+| Characterization of Contractive functions |  Page 4, Lemma 2.15 | [`later.v`](theories/ofe-cat/functors/later.v) | `Lemma contractive_later` |  |
+| Partially Contractive functions] |  Page 4, Definition 2.17 | [`ofe.v`](theories/ofe/ofe.v) | `Definition ContractiveFst` `Definition ContractiveSnd` |  |
+| Characterization of Partially Contractive functions |  Page 4, Lemma 2.20 | [`later.v`](theories/ofe-cat/functors/later.v) | `Lemma contractive_fst_ilater_char` `Lemma contractive_snd_ilater_char` | |
+| Category of iCOFEs | Mentioned in page 5 | [`iCOFE.v`](theories/ofe/ofe-cat/categories/iCOFE.v) | `Definition iCOFE` |  |
 | Banach Fixed-Point Theorem |  Page 5, Theorem 2.21 | [`banach.v`](theories/ofe/banach.v) | `Theorem ibanach_fixed_point` |  |
+| iCOFE-Enriched Category | Page 7, Definition 4.1 | [`ecategory.v`](theories/ecategory-theory/ecategory.v) | `Record ecategory` |  |
+| Self-Enriched Category of iCOFEs | Page 7, Example 4.2 | [`einstances.v`](theories/solver/instances/einstances.v) | `Definition eiCOFE` |  |
+| Enriched Functor | Page 8, Definition 4.3 | [`efunctor.v`](theories/ecategory-theory/efunctor.v) | `Record efunctor` |  |
+| Locally Contractive Functor | Page 8, Definition 4.5 | [`econtractive.v`](theories/solver/econtractive.v) | `Record eFunctorCtr` |  |
+| Partially Locally Contractive Functor | Page 8, Definition 4.6 | [`partial_econtractive.v`](theories/solver/partial_econtractive.v) | `Record eFunctorCtrFst` `Record eFunctorCtrSnd` |  |
+| Later category of an iCOFE-enriched category | Page 8, Definition 4.8 | [`einstances.v`](theories/solver/instances/einstances.v) | `Definition later_ecat` |  |
+| Characterization of Locally Contractive Functors | Page 8, Lemma 4.10 | [`econtractive.v`](theories/solver/econtractive.v) | `Lemma later_ecat_contractive_char ` |  |
+| Characterization of Partially Locally Contractive Functors[^3] | Page 8, Lemma 4.11 | [`partial_econtractive.v`](theories/solver/partial_econtractive.v) | `Lemma contractive_later_ecat_fst` `Lemma contractive_later_ecat_snd ` |  |
+| Symmetrization of a Functor | Page 9, Definition 4.13 | [`esym.v`](theories/solver/esym.v) | `Definition esym` |  |
+| iCOFE-Enriched Contractively Complete Category | Page 9, Definition 4.14 | [`ectr_compl.v`](theories/solver/ectr_compl.v) | `Class eCategoryCtrComplete` |  |
+| eiCOFE is Contractively Complete | Page 9, Example 4.15. Proof in page 5, Theorem 3.4 | [`eicofe_ctr_compl.v`](theories/solver/instances/eicofe_ctr_compl.v) | `Instance eiCOFE_CtrCompl` |  |
+| General America-Rutten Theorem (Base case General Existence Theorem) | Page 9, Theorem 4.16. Proof in page 6, Theorem 3.7. | [`general_america_rutten.v`](theories/solver/general_america_rutten.v) | `Theorem general_america_rutten` `Theorem general_america_rutten_unique` |  |
+| General Existence Theorem | Page 9, Theorem 4.16. | [`general_existence.v`](theories/solver/general_existence.v) | `Theorem general_existence` |  |
+| Existence of unique fixed-point | Page 10, Corollary 4.17 | [`general_existence.v`](theories/solver/general_existence.v) | `Corollary general_existence_value` |  |
 
 [^1]: The terminal object, product object and exponential object are in the category of OFEs are the same as the ones for COFEs and iCOFEs, but they need to be defined separately because of the different definitions of the categories, see [`cofe_ccc.v`](theories/ofe/ofe-cat/structure/cofe_ccc.v) and [`icofe_ccc.v`](theories/ofe/ofe-cat/structure/icofe_ccc.v) for the definitions
 
@@ -144,4 +163,4 @@ covers a more general setting.
     enriched setting for the category of eiCOFEs in the
     [`elater.v`](theories/solver/elater.v) file.
 
-[^3]: The definition of partially contractive in the second argument not mentioned explicitly in the paper, but it is also defined in the formalization, see [`ofe.v`](theories/ofe/ofe.v) `Definition ContractiveSnd`.
+[^3]: The characterization of partially locally contractive functors is currently 'Admmitted' in the formalization, because of the intensional nature of the Coq proof assistant. We are currently working on a proof for this lemma.

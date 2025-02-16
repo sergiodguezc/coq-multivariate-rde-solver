@@ -90,6 +90,20 @@ Qed.
 (* Tactic to prove equality of non-expansive maps by extensionality *)
 Ltac ne_eq := apply ne_eq; intros.
 
+(* Composition of morphisms *)
+Program Definition ofe_comp {A B C : ofe} (f : B -n> C) (g : A -n> B) : A -n> C :=
+  {| ne_mor := fun x => f (g x) |}.
+Next Obligation.
+  intros n x y H; by repeat apply hom_ne.
+Qed.
+
+(* Identity morphism *)
+Program Definition ofe_id {A : ofe} : A -n> A := {| ne_mor := fun x => x |}.
+Next Obligation.
+  by intros n x y H.
+Qed.
+
+
 (* Lemma stating that the composition of two non-expansive maps is non-expansive *)
 Lemma ne_trans {A B C : ofe} (f : B -n> C) (g : A -n> B) : A -n> C.
 Proof.
@@ -169,6 +183,30 @@ Coercion crt_maps_ne : ContractiveMaps >-> NonExpansiveMaps.
 (* Lemma stating that a contractive map is non-expansive *)
 Lemma hom_ctr_ne {A B : ofe} (f : A -c> B) : NonExpansive f.
 Proof. apply ctr_ne, hom_ctr. Qed.
+
+(* The composition of a contractive map with a non-expansive map is contractive *)
+Program Definition comp_ctr_ne_contractive {A B C : ofe} (f : B -n> C) (g : A -c> B) : A -c> C :=
+  {| ctr_mor := fun x => f (g x) |}.
+Next Obligation.
+  intros n x y H; apply hom_ne;
+  apply hom_ctr; intros m Hm; destruct n ; [lia |];
+  apply ofe_mono with (n := n) ; [apply H | ] ; lia.  
+Qed.
+
+(* The composition of a non-expansive map with a contractive map is contractive *)
+Program Definition comp_ne_ctr_contractive {A B C : ofe} (f : B -c> C) (g : A -n> B) : A -c> C :=
+  {| ctr_mor := fun x => f (g x) |}.
+Next Obligation.
+  intros n x y H; apply hom_ctr; intros m Hm; apply hom_ne;
+  apply H; lia.
+Qed.
+
+(* The product of two contractive maps is contractive *)
+Program Definition prod_ctr_contractive {A B C D : ofe} (f : A -c> B) (g : D -c> C) : ofe_prod A D -c> ofe_prod B C :=
+  {| ctr_mor := fun '(x, y) => (f x, g y) |}.
+Next Obligation.
+  intros n [x1 x2] [y1 y2] H; split ; [apply hom_ctr | apply hom_ctr]; intros m Hm; apply H; lia.
+Qed.
 
 (* Complete OFE *)
 

@@ -414,7 +414,7 @@ Proof.
   by rewrite efmap_id.
 Qed. 
   
-Global Instance eeiCOFE_CtrCompl : eCategoryCtrComplete (eiCOFE).
+Global Instance eiCOFE_CtrCompl : eCategoryCtrComplete (eiCOFE).
 Proof.
   unshelve (econstructor).
   -  intros F. exact (tower_icofe F).
