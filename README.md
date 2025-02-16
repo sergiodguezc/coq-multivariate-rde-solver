@@ -154,7 +154,7 @@ covers a more general setting.
 | eiCOFE is Contractively Complete | Page 9, Example 4.15. Proof in page 5, Theorem 3.4 | [`eicofe_ctr_compl.v`](theories/solver/instances/eicofe_ctr_compl.v) | `Instance eiCOFE_CtrCompl` |  |
 | General America-Rutten Theorem (Base case General Existence Theorem) | Page 9, Theorem 4.16. Proof in page 6, Theorem 3.7. | [`general_america_rutten.v`](theories/solver/general_america_rutten.v) | `Theorem general_america_rutten` `Theorem general_america_rutten_unique` |  |
 | General Existence Theorem | Page 9, Theorem 4.16. | [`general_existence.v`](theories/solver/general_existence.v) | `Theorem general_existence` |  |
-| Existence of unique fixed-point | Page 10, Corollary 4.17 | [`general_existence.v`](theories/solver/general_existence.v) | `Corollary general_existence_value` |  |
+| Existence of unique fixed-point | Page 10, Corollary 4.17 | [`general_existence.v`](theories/solver/general_existence.v) | `Corollary general_existence_value` `Corollary general_existence_value_america_rutten` |  |
 
 [^1]: The terminal object, product object and exponential object are in the category of OFEs are the same as the ones for COFEs and iCOFEs, but they need to be defined separately because of the different definitions of the categories, see [`cofe_ccc.v`](theories/ofe/ofe-cat/structure/cofe_ccc.v) and [`icofe_ccc.v`](theories/ofe/ofe-cat/structure/icofe_ccc.v) for the definitions
 
