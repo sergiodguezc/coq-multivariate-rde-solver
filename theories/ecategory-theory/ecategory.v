@@ -219,7 +219,6 @@ Proof.
   }
   f_equal. apply proof_irrelevance.
 Qed.
-    
 
 Coercion eobj : eCategory >-> Sortclass.
 
@@ -431,6 +430,7 @@ Definition eprod_eid_mor {Y Z : eCategory} (A : prod Y Z) : icofe_unit -> eprod_
 Definition eprod_ecompose_mor {Y Z : eCategory} {A B C : prod Y Z} :
   tensor_prod (eprod_ehom B C, eprod_ehom A B) -> eprod_ehom A C :=
   fun '(f, g) => (ecompose (fst f, fst g), ecompose (snd f, snd g)). 
+
 
 Lemma eprod_mixin (Y Z : eCategory) : eCatMixin (prod (eobj Y) (eobj Z)) eprod_ehom eprod_eid_mor (@eprod_ecompose_mor Y Z).
 Proof.

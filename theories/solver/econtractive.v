@@ -131,11 +131,8 @@ Proof.
   exists (G_from_efunct_ctr F).
   unshelve eapply efunctor_eq.
   - extensionality A. reflexivity.
-  - intros A B f. 
-    assert (eq_refl = (functional_extensionality F (G_from_efunct_ctr F∘[eFUNCT] enext_efunctor Y) (fun A0 : eobj[Y] => eq_refl))) as H.
-    { apply proof_irrelevance. }
-    rewrite -H.
-    reflexivity.
+  - intros A B f ; rewrite /= /G_from_efunct_ctr_efmap /=.
+    apply eq_dep_refl.
 Qed.
 
 Theorem later_ecat_contractive {Y Z : eCategory} (F : eFunctor Y Z)
@@ -161,6 +158,7 @@ Proof.
     apply later_ecat_contractive.
     by exists G.
 Qed.
+
 
 Theorem swap_funct_ctr {X Y Z : eCategory} (F : eFunctorCtr (X × Y) Z) : eFunctorCtr (Y × X) Z.
 Proof.

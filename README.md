@@ -148,7 +148,7 @@ covers a more general setting.
 | Partially Locally Contractive Functor | Page 8, Definition 4.6 | [`partial_econtractive.v`](theories/solver/partial_econtractive.v) | `Record eFunctorCtrFst` `Record eFunctorCtrSnd` |  |
 | Later category of an iCOFE-enriched category | Page 8, Definition 4.8 | [`einstances.v`](theories/solver/instances/einstances.v) | `Definition later_ecat` |  |
 | Characterization of Locally Contractive Functors | Page 8, Lemma 4.10 | [`econtractive.v`](theories/solver/econtractive.v) | `Lemma later_ecat_contractive_char ` |  |
-| Characterization of Partially Locally Contractive Functors[^3] | Page 8, Lemma 4.11 | [`partial_econtractive.v`](theories/solver/partial_econtractive.v) | `Lemma contractive_later_ecat_fst` `Lemma contractive_later_ecat_snd ` |  |
+| Characterization of Partially Locally Contractive Functors | Page 8, Lemma 4.11 | [`partial_econtractive.v`](theories/solver/partial_econtractive.v) | `Lemma contractive_later_ecat_fst_char` `Lemma contractive_later_ecat_snd_char` |  |
 | Symmetrization of a Functor | Page 9, Definition 4.13 | [`esym.v`](theories/solver/esym.v) | `Definition esym` |  |
 | iCOFE-Enriched Contractively Complete Category | Page 9, Definition 4.14 | [`ectr_compl.v`](theories/solver/ectr_compl.v) | `Class eCategoryCtrComplete` |  |
 | eiCOFE is Contractively Complete | Page 9, Example 4.15. Proof in page 5, Theorem 3.4 | [`eicofe_ctr_compl.v`](theories/solver/instances/eicofe_ctr_compl.v) | `Instance eiCOFE_CtrCompl` |  |
@@ -162,5 +162,3 @@ covers a more general setting.
     for the category of OFEs, COFEs and iCOFEs, but it is also defined in the
     enriched setting for the category of eiCOFEs in the
     [`elater.v`](theories/solver/elater.v) file.
-
-[^3]: The characterization of partially locally contractive functors is currently 'Admmitted' in the formalization, because of the intensional nature of the Coq proof assistant. We are currently working on a proof for this lemma.

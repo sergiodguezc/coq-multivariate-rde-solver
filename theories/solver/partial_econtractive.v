@@ -1,6 +1,6 @@
 From sgdt Require Import axioms ecategory ofe iCOFE icofe_ccc einstances efunctor econtractive.
 
-Require Import ssreflect PropExtensionality Lia.
+Require Import ssreflect Lia.
 (*
   Partial contractive functors
 *)
@@ -9,7 +9,6 @@ Record eFunctorCtrSnd (X Y Z : eCategory)  : Type := {
   efunct_snd :> eFunctor (eprod_cat X Y) Z;
   efunct_ctr_snd {A B} : ContractiveSnd (@efmap _ _ efunct_snd A B)
 }.
-(* Coercion efunct_snd : eFunctorCtrSnd >-> eFunctor. *)
 Arguments efunct_snd {_ _ _} .
 
 Lemma eFunctorCtrSnd_eq {X Y Z : eCategory} (F G : eFunctorCtrSnd X Y Z) :
@@ -83,6 +82,7 @@ Qed.
 
 Record eFunctorCtrFst (X Y Z : eCategory)  : Type := {
   efunct_fst :> eFunctor (eprod_cat X Y) Z;
+  (* efunct_ctr_fst {y : Y} {A B} : Contractive (@efmap _ _ (first_efunct efunct_fst y) A B) *)
   efunct_ctr_fst {A B} : ContractiveFst (@efmap _ _ efunct_fst A B)
 }.
 Arguments efunct_fst {_ _ _} .
@@ -96,6 +96,7 @@ Proof.
 Qed.
 
 Record iseFunctorCtrFst {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) : Prop := {
+  (* is_efunct_ctr_fst {y : Y} {A B} : Contractive (@efmap _ _ (first_efunct F y) A B) *)
   is_efunct_ctr_fst {A B} : ContractiveFst (@efmap _ _ F A B)
 }.
 
@@ -210,15 +211,28 @@ Definition G_from_efunct_ctr_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z)
      efunct_mixin := G_from_efunct_ctr_snd_mixin F |}.
 
 Lemma contractive_later_ecat_snd {X Y Z : eCategory} (F : eFunctorCtrSnd X Y Z) : 
-  { G : eFunctor (eprod_cat X (later_ecat Y)) Z | efunct_snd F = compose_efunctor G (times_efunctor (eID X) (enext_efunctor Y)) }.
+  { G : eFunctor (eprod_cat X (later_ecat Y)) Z | efunct_snd F = G ∘[eFUNCT] (times_efunctor (eID X) (enext_efunctor Y)) }.
 Proof.
   exists (G_from_efunct_ctr_snd F).
   unshelve eapply efunctor_eq.
-  - apply functional_extensionality_dep; intros [A1 A2]; reflexivity.
-  - intros [A1 A2] [B1 B2] [f1 f2]; simpl in *.
-    rewrite -ebimap_efmap /= /eprod_mor.
-Admitted.
+  - extensionality x; by destruct x.
+  - intros [A1 A2] [B1 B2] [f1 f2]  ; simpl in *.
+    apply eq_dep_refl.
+Defined.
 
+Lemma contractive_later_ecat_snd_char {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) :
+  iseFunctorCtrSnd F <-> exists G, F = G ∘[eFUNCT] (times_efunctor (eID X) (enext_efunctor Y)).
+Proof.
+  split.
+  - intros H.
+    destruct (contractive_later_ecat_snd (toeFunctorCtrSnd H)) as [G H1].
+    exists G; apply H1.
+  - intros [G H]. subst F. unshelve econstructor.
+    intros [A1 A2] [B1 B2] h n f g Hfg; simpl in *.
+    apply efmap_mor_ne. split ; [reflexivity | ].
+    destruct n ; [by left| right]. simpl.
+    apply Hfg. lia.
+Qed.
 
 Definition G_from_efunct_ctr_fst_efmap {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) :
   forall A B : eobj[X × later_ecat Y],
@@ -254,8 +268,21 @@ Lemma contractive_later_ecat_fst {X Y Z : eCategory} (F : eFunctorCtrFst X Y Z) 
 Proof.
   exists (G_from_efunct_ctr_fst F).
   unshelve eapply efunctor_eq.
-  - apply functional_extensionality_dep; intros [A1 A2]; reflexivity.
+  - extensionality x; by destruct x.
   - intros [A1 A2] [B1 B2] [f1 f2]; simpl in *.
-    rewrite -ebimap_efmap /= /eprod_mor.
-Admitted.
+    apply eq_dep_refl.
+Defined.
 
+Lemma contractive_later_ecat_fst_char {X Y Z : eCategory} (F : eFunctor (eprod_cat X Y) Z) :
+  iseFunctorCtrFst F <-> exists G, F = compose_efunctor G (times_efunctor (enext_efunctor X) (eID Y)).
+Proof.
+  split.
+  - intros H.
+    destruct (contractive_later_ecat_fst (toeFunctorCtrFst H)) as [G H1].
+    exists G; apply H1.
+  - intros [G H]. subst F. unshelve econstructor.
+    intros [A1 A2] [B1 B2] h n f g Hfg; simpl in *.
+    apply efmap_mor_ne. split ; [| reflexivity  ].
+    destruct n ; [by left| right]. simpl.
+    apply Hfg; lia.
+Qed.

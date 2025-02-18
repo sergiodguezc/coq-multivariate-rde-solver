@@ -69,43 +69,17 @@ Lemma efmap_mor_ecompose_mor {Y Z : eCategory} (F : eFunctor Y Z) {A B C : Y} (f
   efmap_mor F (ecompose_mor Y (f, g)) = ecompose_mor Z (efmap_mor F f, efmap_mor F g).
 Proof. by rewrite efmap_mor_ecompose. Qed.
 
-Record eFunctorContractive {Y Z : eCategory}  : Type := {
-  efunct : eFunctor Y Z;
-  efunct_ctr {A B} : Contractive (@efmap _ _ efunct A B)
-}.
-Coercion efunct : eFunctorContractive >-> eFunctor.
-
 Notation "F →  G" := (eFunctor F G) (at level 90) : ofe_category_scope.
 
-Definition coerce_efunctor {Y Z : eCategory} {F G : eFunctor Y Z}
-  (H : @efobj Y Z F  = @efobj Y Z G) {A B} (f : F A ~~{Z}~> F B)
-  : G A ~~{Z}~> G B := eq_rect _ (fun F => F A ~~{Z}~> F B) f _ H.
-
-Lemma coerce_efunctor_id {Y Z : eCategory} {F : eFunctor Y Z}
-  (H : @efobj Y Z F  = @efobj Y Z F) {A B} (f : F A ~~{Z}~> F B)
-  : coerce_efunctor H f = f.
-Proof.
- by assert (H = eq_refl (@efobj Y Z F)) as -> by (by apply proof_irrelevance).
-Qed.
-
-Lemma coerce_efunctor_proper {Y Z : eCategory} {F G : eFunctor Y Z}
-  (H1 H2 : @efobj Y Z F  = @efobj Y Z G) {A B} (f : F A ~~{Z}~> F B) (g : G A ~~{Z}~> G B) :
-  g = coerce_efunctor H1 f -> g = coerce_efunctor H2 f.
-Proof.
-  intros ->.
-  by assert (H1 = H2) as -> by (by apply proof_irrelevance).
-Qed.
-
 Lemma efunctor_eq {Y Z : eCategory} (F G : eFunctor Y Z) ( H1 : efobj Y Z F = efobj Y Z G)
-  ( H2 : forall x y (f : ehom Y x y), coerce_efunctor H1 (efmap F f) = efmap G f) : F = G.
+  ( H2 : forall x y (f : ehom Y x y), eq_dep ofe ofe_car _ (efmap F f) _ (efmap G f)) : F = G.
 Proof.
-  destruct F as [F fmapF HF1 ], G as [G fmapG HG1].
+  destruct F as [F fmapF HF1], G as [G fmapG HG1].
   assert (F = G) as -> by apply H1.
   assert (fmapF = fmapG) as -> .
-  {  extensionality x. extensionality y. extensionality f.
-    set (H := H2 x y f). simpl in *.
-    rewrite <- H. symmetry. 
-    by assert (H1 = eq_refl G) as -> by (by apply proof_irrelevance).
+  { extensionality x; extensionality y; extensionality f.
+    set (H := H2 x y f); simpl in *.
+    by apply eq_dep_eq.
   }
   f_equal ; apply proof_irrelevance.
 Qed.
@@ -187,23 +161,6 @@ Notation "F ∘[eFUNCT] G" := (compose_efunctor F G) (at level 40) : ofe_categor
 Lemma efmap_ecomp_efunct {X Y Z : eCategory} (F : eFunctor Y Z) (G : eFunctor X Y) {A B : X} (f : A ~~{X}~> B) :
   efmap (F ∘[eFUNCT] G) f = efmap F (efmap G f).
 Proof. reflexivity. Qed.
-
-(* Lemma times_efunctor_mixin {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : *)
-(*   eFunctMixin (X × Z) (Y × W) (fun x => (F (fst x), G (snd x))) *)
-(*               (fun A B f => (efmap F (fst f), efmap G (snd f))). *)
-(* Proof. *)
-(*   unshelve econstructor. *)
-(*   - intros [A1 A2] [B1 B2] n [f1 f2] [g1 g2] [H1 H2]; split ;  *)
-(*     by repeat apply hom_ne. *)
-(*   - intros [A1 A2]. by simplify_efunct.  *)
-(*   - intros [A1 A2] [B1 B2] [C1 C2] [f1 f2] [g1 g2]. by simplify_efunct. *)
-(* Qed. *)
-
-(* Definition times_efunctor {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : eFunctor (X × Z) (Y × W) := {| *)
-(*   efobj := fun x : X × Z => (F (fst x), G (snd x) ) : Y × W; *)
-(*   efmap_mor := fun A B f => (efmap F (fst f), efmap G (snd f)); *)
-(*   efunct_mixin := @times_efunctor_mixin X Y Z W F G *)
-(*  |}. *)
 
 Lemma pfst_ne {Y Z : eCategory} (A B : eobj[Y × Z]) :
   NonExpansive (fun f : A ~~{ Y × Z }~> B => fst f).
@@ -382,6 +339,14 @@ Notation "<| F , G |>" := (fork_efunct F G) (at level 40) : ofe_category_scope.
 
 Definition times_efunctor {X Y Z W : eCategory} (F : eFunctor X Y) (G : eFunctor Z W) : eFunctor (X × Z) (Y × W) :=
   <| F ∘[eFUNCT] pfst_efunct, G ∘[eFUNCT] psnd_efunct |>.
+
+Example times_efunctor_id {X Y : eCategory} : times_efunctor (eID X) (eID Y) = eID (X × Y).
+Proof.
+  apply efunctor_eq; simpl.
+  - extensionality x. destruct x as [x1 x2]. reflexivity.
+  - intros [x1 x2] [y1 y2] [f1 f2]. simplify_efunct.
+    apply eq_dep_refl.
+Qed.
 
 Lemma drop_one_efunct_mixin {X Y : eCategory} (F : eFunctor (one_ecat × X) Y) :
   eFunctMixin X Y (fun x => F (tt, x)) (fun A B f => ebimap[F] (eid{one_ecat} tt) f).

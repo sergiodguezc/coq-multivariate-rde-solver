@@ -76,11 +76,11 @@ Proof.
   destruct H as [[to1 from1] [to2 from2]]. simpl in *.
   unfold ecomp in *.
   eapply mkEISO with (eto := eprod_mor to1 to2) (efrom := eprod_mor from1 from2).
-  - unfold ecomp in *. rewrite <- eprod_mor_ecompose.
+  - unfold ecomp in *. rewrite - eprod_mor_ecompose.
     unfold eprod_mor. 
     by rewrite efrom_to0 efrom_to1.
   - unfold ecomp in *.
-    rewrite <- eprod_mor_ecompose.
+    rewrite - eprod_mor_ecompose.
     unfold eprod_mor.
     by rewrite eto_from0 eto_from1.
 Defined.
