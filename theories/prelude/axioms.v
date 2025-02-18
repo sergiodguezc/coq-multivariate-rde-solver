@@ -21,4 +21,4 @@
   straightforward reasoning within the Coq framework.
 *) 
 
-Require Export FunctionalExtensionality ProofIrrelevance EqdepFacts.
+Require Export FunctionalExtensionality ProofIrrelevance ProofIrrelevanceFacts.
