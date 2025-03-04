@@ -12,7 +12,7 @@ Proof.
   set F' := toeFunctorCtr (second_efunctor_ctr_partial F tt).
   destruct (general_america_rutten F') as [FixF FixFiso].
   exists (const_efunctor FixF).
-  intros []; apply FixFiso.
+  intros [] ; apply FixFiso.
 Qed.
 
 Theorem general_existence_base_case_ctr {Y : eCategory} `{eCategoryCtrComplete Y}
