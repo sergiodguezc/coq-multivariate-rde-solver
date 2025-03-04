@@ -9,8 +9,8 @@ authors:
     family-names: Domínguez Cabrera
 identifiers:
   - type: doi
-    value: 10.5281/zenodo.14879646
-repository-code: 'https://zenodo.org/records/14879646'
+    value: 10.5281/zenodo.14965747
+repository-code: 'https://zenodo.org/records/14965747'
 repository: >-
   https://github.com/sergiodguezc/coq-multivariate-rde-solver
 abstract: >-
